@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content">
+  <title>Artisan Roastery - Administrative Portal</title>
+  <meta name="description" content="Artisan Roastery Administrative Portal with beverage analytics, shift records, and barista credentials.">
+  <meta name="theme-color" content="#0e0604">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Roastery">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon.svg">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/fonts/neue-haas-unica/stylesheet.css">
+  <link rel="stylesheet" href="/assets/fonts/helvetica-now/stylesheet.css">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <main class="page-container">
+    
+    <!-- Top tagline above phone -->
+    <header class="app-header">
+      <h1 class="header-tagline">Secure login to accept<br>card and cash payments.</h1>
+    </header>
+
+    <!-- Phone Mockup Frame -->
+    <div class="phone-wrapper">
+      <div class="phone-frame">
+        <div class="screen">
+          
+          <!-- VIEW 1: TD LOGIN SCREEN -->
+          <div id="view-login" class="view-screen active">
+            <!-- Dynamic Ambient & Video Canvas matching Internal UI -->
+            <div class="login-bg-media">
+              <canvas id="login-ambient-canvas" class="login-ambient-canvas"></canvas>
+              <video class="login-video" autoplay loop muted playsinline>
+                <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260707_003042_3d2380a6-1ce6-4407-a2e2-cfec46546407.mp4" type="video/mp4">
+              </video>
+              <div class="login-bg-overlay"></div>
+            </div>
+
+            <!-- Header Menu & Install Capsule (Matching Inner UI Top Bar) -->
+            <div class="td-header">
+              <button type="button" class="glass circle td-menu-btn" data-liquid aria-label="Menu">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              </button>
+
+              <div class="td-header-right">
+                <button type="button" id="btn-top-install" class="glass circle btn-install-top" data-liquid aria-label="Install Web App" title="Direct Install to Home Screen">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Artisan Coffee Roastery Brand Crest & Portal Header -->
+            <div class="cafe-brand-header">
+              <div class="cafe-brand-crest glass" data-liquid aria-label="Artisan Coffee Roastery Crest">
+                <svg class="coffee-cup-svg" width="46" height="46" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Steaming curls -->
+                  <path class="steam steam-1" d="M18 10C16.8 8 16.8 5.8 18 3.8" stroke="#f5c285" stroke-width="2.2" stroke-linecap="round"/>
+                  <path class="steam steam-2" d="M24 9.5C22.6 7 22.6 4.6 24 2.2" stroke="#e0a96d" stroke-width="2.5" stroke-linecap="round"/>
+                  <path class="steam steam-3" d="M30 10C28.8 8 28.8 5.8 30 3.8" stroke="#f5c285" stroke-width="2.2" stroke-linecap="round"/>
+                  <!-- Cup Body with rich espresso crema gradient -->
+                  <path d="M11 16H33V28C33 33.5 28.5 38 23 38C17.5 38 13 33.5 13 28V16" fill="url(#coffeeCupGrad)" stroke="#f5c285" stroke-width="1.8"/>
+                  <!-- Cup Handle -->
+                  <path d="M33 19.5H36.5C38.9853 19.5 41 21.5147 41 24C41 26.4853 38.9853 28.5 36.5 28.5H33" stroke="#f5c285" stroke-width="2.2" stroke-linecap="round"/>
+                  <!-- Saucer Base -->
+                  <path d="M7 40C7 39.4477 7.44772 39 8 39H38C38.5523 39 39 39.4477 39 40C39 41.6569 37.6569 43 36 43H10C8.34315 43 7 41.6569 7 40Z" fill="#180a06" stroke="#f5c285" stroke-width="1.8"/>
+                  <!-- Golden Crema Surface -->
+                  <ellipse cx="23" cy="18" rx="8" ry="2.2" fill="#d97706" opacity="0.85"/>
+                  <defs>
+                    <linearGradient id="coffeeCupGrad" x1="13" y1="16" x2="33" y2="38" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#2d1309"/>
+                      <stop offset="1" stop-color="#120603"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <h2 class="cafe-brand-title">Artisan Roastery</h2>
+              <p class="cafe-brand-subtitle">Administrative & Barista Portal</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="td-login-form" class="td-form" autocomplete="on" novalidate onsubmit="window.handleDirectLogin && window.handleDirectLogin(event); return false;">
+              
+              <!-- Email Field -->
+              <div class="td-input-group">
+                <div class="icon-col">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </div>
+                <div class="input-col">
+                  <label for="td-email" class="td-label">Email</label>
+                  <input type="text" id="td-email" class="td-input" value="ajinaju68@gmail.com" inputmode="email" autocomplete="email" />
+                </div>
+              </div>
+
+              <!-- Password Field -->
+              <div class="td-input-group">
+                <div class="icon-col">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
+                <div class="input-col">
+                  <label for="td-password" class="td-label">Password</label>
+                  <input type="password" id="td-password" class="td-input" value="11223344" autocomplete="current-password" />
+                </div>
+              </div>
+
+              <!-- Remember Email Checkbox -->
+              <div class="td-checkbox-row">
+                <label class="td-checkbox-label">
+                  <input type="checkbox" id="td-remember" checked />
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">Remember Email</span>
+                </label>
+              </div>
+
+              <!-- Feedback message -->
+              <div id="login-feedback" class="login-feedback"></div>
+
+              <!-- Bottom Form Actions (Positioned on bottom) -->
+              <div class="td-form-actions">
+                <!-- Sign In Button (Styled exactly like inner UI liquid glass capsules) -->
+                <button type="button" id="btn-signin" class="td-signin-btn glass" data-liquid onclick="window.handleDirectLogin && window.handleDirectLogin(event);">
+                  <span>Sign In</span>
+                </button>
+
+                <!-- Free Guest Access Button -->
+                <button type="button" id="btn-guest-login" class="td-guest-btn glass" data-liquid onclick="window.handleGuestLogin && window.handleGuestLogin(event);">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>Continue as Guest</span>
+                </button>
+
+                <!-- Forgot Password Link -->
+                <a href="#" id="forgot-link" class="td-forgot-link">Forgot Password?</a>
+              </div>
+            </form>
+          </div>
+
+          <!-- VIEW 2: PROFILE DASHBOARD (COFFEE PROFILE & ADMIN ROLE) -->
+          <div id="view-profile" class="view-screen">
+            
+            <!-- Hero Section -->
+            <section class="hero-section">
+              <video class="hero-video" autoplay loop muted playsinline>
+                <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260707_003042_3d2380a6-1ce6-4407-a2e2-cfec46546407.mp4" type="video/mp4">
+              </video>
+              <div class="hero-overlay"></div>
+              
+              <!-- Top bar -->
+              <div class="top-bar">
+                <button type="button" id="btn-top-action" class="glass circle btn-edit" data-liquid aria-label="Edit Profile" onclick="window.handleTopAction && window.handleTopAction(event);">
+                  <span id="top-action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                  </span>
+                </button>
+                
+                <div class="top-bar-right">
+                  <button type="button" id="btn-logout" class="glass circle btn-profile" data-liquid aria-label="Logout / Switch User" title="Logout to TD Login" onclick="window.handleBackToLogin && window.handleBackToLogin(event);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </button>
+
+                  <button type="button" id="btn-back-login" class="glass circle btn-close" data-liquid aria-label="Lock / Exit to Login" title="Lock Screen" onclick="window.handleBackToLogin && window.handleBackToLogin(event);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Identity Section -->
+            <section class="identity-section">
+              <!-- Admin Role Pill -->
+              <div class="admin-role-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+                <span>ADMINISTRATIVE ROLE</span>
+              </div>
+
+              <div class="name-container">
+                <img class="laurel laurel-left" src="/assets/images/laurel-left.png" alt="Left laurel branch" />
+                <h1 class="user-name">Dasha</h1>
+                <img class="laurel laurel-right" src="/assets/images/laurel-right.png" alt="Right laurel branch" />
+              </div>
+              <p class="user-subtitle">Plum Parfait Latte</p>
+            </section>
+
+            <!-- Achievements Pill -->
+            <div class="achievements-container">
+              <button class="glass pill achievements-pill" data-liquid aria-label="12 achievements">
+                <img src="/assets/images/icon-trophy.png" alt="Trophy icon" class="trophy-icon" />
+                <span class="achievements-text">12 achievements</span>
+              </button>
+            </div>
+
+            <!-- Stats Grid -->
+            <section class="stats-grid">
+              <div class="stat-card card-1">
+                <img src="https://polo-pecan-73837341.figma.site/_assets/v11/a8ba62db54d1e331b7beb36d69308e9b92516b99.png" alt="Coffee drink" class="stat-image" />
+                <span class="stat-number">154</span>
+                <span class="stat-label">drinks consumed</span>
+              </div>
+              
+              <div class="stat-card card-2">
+                <img src="https://polo-pecan-73837341.figma.site/_assets/v11/953600065119f54f64ab9edb076b3cbb289fcff8.png" alt="Sandwich" class="stat-image" />
+                <span class="stat-number">36</span>
+                <span class="stat-label">sandwiches eaten</span>
+              </div>
+              
+              <div class="stat-card card-3">
+                <img src="https://polo-pecan-73837341.figma.site/_assets/v11/aef68e05f729a30ed177f74c2cece578c05bfdba.png" alt="Cafe" class="stat-image" />
+                <span class="stat-number">12</span>
+                <span class="stat-label">cafes visited</span>
+              </div>
+            </section>
+
+            <!-- Favorite Card -->
+            <section class="favorite-card">
+              <img src="https://polo-pecan-73837341.figma.site/_assets/v11/976a811111808abc50be33c2483872dbdb6ad5a8.png" alt="Latte" class="favorite-image" />
+              <div class="favorite-info">
+                <span class="favorite-badge">Favorite</span>
+                <h2 class="favorite-title">Latte</h2>
+                <span class="favorite-count">Ordered 73 times</span>
+              </div>
+              <button class="glass circle btn-shuffle" data-liquid aria-label="Shuffle favorite drink">
+                <img src="/assets/images/icon-shuffle.png" alt="Shuffle icon" class="shuffle-icon" />
+              </button>
+            </section>
+
+            <!-- Partial Next Card -->
+            <div class="next-card-teaser" aria-hidden="true"></div>
+
+          </div>
+
+          <!-- Edit Username Liquid Glass Modal -->
+          <div id="modal-edit-username" class="modal-backdrop" aria-hidden="true">
+            <div class="glass-modal">
+              <div class="modal-header">
+                <div class="modal-icon-badge glass">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                  </svg>
+                </div>
+                <h3 class="modal-title">Edit Barista Name</h3>
+                <p class="modal-subtitle">Customize your displayed profile name</p>
+              </div>
+              <form id="form-edit-username" onsubmit="window.saveUsername(event); return false;">
+                <div class="td-input-group modal-input-group">
+                  <div class="icon-col">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                  <div class="input-col">
+                    <label for="input-edit-username" class="td-label">Username</label>
+                    <input type="text" id="input-edit-username" class="td-input" maxlength="10" placeholder="e.g. Dasha" required autocomplete="off" />
+                  </div>
+                  <span class="char-counter" id="edit-username-counter">0/10</span>
+                </div>
+                <div class="modal-actions">
+                  <button type="button" class="glass modal-btn-cancel" onclick="window.closeEditUsernameModal();">Cancel</button>
+                  <button type="submit" class="glass modal-btn-save">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- First-Time Login Welcome Modal (10 letters max) -->
+          <div id="modal-first-login" class="modal-backdrop" aria-hidden="true">
+            <div class="glass-modal first-login-modal">
+              <div class="modal-header">
+                <div class="modal-icon-badge glass">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <h3 class="modal-title">Welcome, Barista!</h3>
+                <p class="modal-subtitle">Choose your display name to personalize your portal</p>
+              </div>
+              <form id="form-first-login" onsubmit="window.saveFirstLoginUsername(event); return false;">
+                <div class="td-input-group modal-input-group">
+                  <div class="icon-col">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                  <div class="input-col">
+                    <label for="input-first-username" class="td-label">Username</label>
+                    <input type="text" id="input-first-username" class="td-input" maxlength="10" placeholder="e.g. Dasha" required autocomplete="off" />
+                  </div>
+                  <span class="char-counter" id="first-username-counter">0/10</span>
+                </div>
+                <div class="modal-actions">
+                  <button type="submit" class="glass modal-btn-save full-width">Continue to Profile</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

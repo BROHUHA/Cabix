@@ -1,0 +1,7 @@
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: local('Helvetica Now Display'), local('Helvetica Neue'), local('Arial');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}

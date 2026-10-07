@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#2a1208"/>
+      <stop offset="55%" stop-color="#140804"/>
+      <stop offset="100%" stop-color="#0a0402"/>
+    </radialGradient>
+    <linearGradient id="cupGrad" x1="140" y1="180" x2="340" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3d1b0d"/>
+      <stop offset="100%" stop-color="#1a0b05"/>
+    </linearGradient>
+    <linearGradient id="rimGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5c285"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <radialGradient id="cremaGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.9"/>
+      <stop offset="70%" stop-color="#d97706" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#78350f" stop-opacity="0.5"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <!-- Background squircle (maskable safe area compliant) -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  <rect width="510" height="510" x="1" y="1" rx="127" fill="none" stroke="rgba(245, 194, 133, 0.25)" stroke-width="2"/>
+
+  <!-- Coffee Cup Group -->
+  <g filter="url(#shadow)">
+    <!-- Steam Curls -->
+    <path d="M210 145 C195 120 195 90 210 65" stroke="#f5c285" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.85"/>
+    <path d="M256 135 C240 105 240 75 256 45" stroke="#fbbf24" stroke-width="16" stroke-linecap="round" fill="none" opacity="0.95"/>
+    <path d="M302 145 C287 120 287 90 302 65" stroke="#f5c285" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.85"/>
+
+    <!-- Cup Body -->
+    <path d="M140 190 H340 V290 C340 350 295 390 240 390 C185 390 140 350 140 290 Z" fill="url(#cupGrad)" stroke="url(#rimGrad)" stroke-width="12"/>
+
+    <!-- Cup Handle -->
+    <path d="M340 225 H375 C402 225 425 248 425 275 C425 302 402 325 375 325 H340" stroke="url(#rimGrad)" stroke-width="16" stroke-linecap="round" fill="none"/>
+
+    <!-- Saucer Base -->
+    <path d="M100 415 C100 405 108 395 118 395 H394 C404 395 412 405 412 415 C412 435 390 450 370 450 H142 C122 450 100 435 100 415 Z" fill="#140804" stroke="url(#rimGrad)" stroke-width="12"/>
+
+    <!-- Crema Surface -->
+    <ellipse cx="240" cy="205" rx="75" ry="20" fill="url(#cremaGlow)"/>
+    <ellipse cx="235" cy="203" rx="45" ry="10" fill="#fde68a" opacity="0.6"/>
+  </g>
+</svg>
