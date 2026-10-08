@@ -1,223 +1,213 @@
-# Cabix Administrative Portal Architecture & Implementation Blueprint (MODEL.md)
+# Cabix Elevator Engineering & Maintenance Architecture (MODEL.md)
 
-This document defines the comprehensive architecture and implementation plan for transforming the application into **Cabix** — featuring a multi-tiered Administrative Portal with a **God Admin (Super Admin)**, **Secondary Admins**, **Authenticated Users**, and a public **Guest Mode**, running **100% on Free-Tier Cloud Infrastructure**.
+This document defines the comprehensive architecture and implementation plan for **Cabix** — an **Elevator & Lift Engineering Lifecycle & Maintenance Management System**. It features an **Isolated Enterprise Administrative Portal (`/console`)**, a **Customer/Client WebAPK (`/`)**, **On-Site QR Code Generation & Camera Scanning**, **Component Lifecycle & Time Period Tracking**, **User Maintenance Requests**, and a **God Admin (Super Admin)** $\rightarrow$ **Secondary Admins** $\rightarrow$ **Users** $\rightarrow$ **Guest Mode** hierarchy running **100% on Free-Tier Cloud Infrastructure**.
 
 ---
 
-## 1. Free-Tier Architecture & Technology Selection
+## 1. System Topology & Dual-Portal Architecture
 
-### Recommended Stack (100% Free Tier, Zero Monthly Cost)
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                               CABIX SYSTEM ARCHITECTURE                                │
+│                                                                                        │
+│  [1] CLIENT & BUILDING RESIDENT APPLICATION (/)                                        │
+│      • URL: https://your-domain.vercel.app/                                            │
+│      • Target Audience: Building Owners, Facility Managers, Residents, Public Guests   │
+│      • POV: Mobile-First PWA & Installable WebAPK                                      │
+│      • Guest Mode: Browse lift services, maintenance packages & engineering specs     │
+│      • Client Mode: Submit Lift Maintenance Requests via structured Question Form,     │
+│                     view live service status (#CBX-REQ-xxxx) & history                 │
+│                                                                                        │
+│  [2] ENTERPRISE ENGINEERING CONSOLE (/console)                                        │
+│      • URL: https://your-domain.vercel.app/console                                     │
+│      • Target Audience: God Admin (Master Director) & Secondary Admins (Technicians)   │
+│      • POV: High-contrast Command Center (Desktop / Tablet / Mobile Field Device)      │
+│      • On-Site Camera QR Scanner: Instant field scanning of lift QR tags               │
+│      • QR Code Generator: Generate printable QR codes for all lift units & machinery   │
+│      • Liftwork & Component Lifecycle: View parts used, service age & lifespan alerts  │
+│      • God Mode: Provision/revoke admins, manage building users, master audit logs     │
+│      • Admin/Technician Mode: Process maintenance tickets, log liftwork & inspections  │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
 
-| Layer | Service / Technology | Free Tier Capacity | Responsibility |
+---
+
+## 2. QR Code Engine & Field Operations Workflow
+
+```
++----------------------------------------------------------------------------------------+
+|                                  QR LIFECYCLE PIPELINE                                 |
+|                                                                                        |
+|  [1] GOD / ADMIN GENERATION (In /console)                                              |
+|      Create Lift Unit ──> System Generates Unique QR Code [CBX-LIFT-XXXX]              |
+|                           Printable SVG/PNG Sticker placed inside Elevator Machine Room|
+|                           or Cabin Door Jamb                                           |
+|                                                                                        |
+|  [2] FIELD SCANNING (In /console on Mobile/Tablet)                                     |
+|      Technician arrives at building ──> Opens /console Scanner ──> Scans Lift QR Tag   |
+|                                                                                        |
+|  [3] INSTANT LIFTWORK DASHBOARD DEEP LINK:                                             |
+|      • Lift Details (Building, Model, Floors, Installation Date, Operating Status)     |
+|      • Installed Components Inventory (Traction Motor, Inverter, Wire Ropes, etc.)     |
+|      • Component Time Periods & Lifespans (Days active, Overdue replacement badges)    |
+|      • Maintenance Requests Queue (Active tickets submitted by building users)         |
+|      • Log New Liftwork Action (Record parts replaced, hours worked, test output)      |
++----------------------------------------------------------------------------------------+
+```
+
+---
+
+## 3. Free-Tier Technology Stack (100% Free Tier, Zero Monthly Cost)
+
+| Layer | Technology | Free Tier Capacity | Responsibility |
 | :--- | :--- | :--- | :--- |
-| **Frontend & PWA** | **Vite + Vanilla JS + CSS** | Unlimited / Local | Mobile-first WebAPK, PWA Service Worker, liquid-glass aesthetic. |
-| **Hosting & CI/CD** | **Vercel (Hobby Tier)** | Unlimited deploys, 100GB bandwidth | Automatic Git build on commit (`BROHUHA/Cabix`), global CDN, SSL. |
-| **Auth & Database** | **Supabase (Free Tier)** | 50,000 MAU, 500MB DB, 2 Projects | Postgres Database, Row-Level Security (RLS), Realtime events, Auth. |
-| **Local Fallback Engine** | **Structured LocalStorage / Mock DB** | Client-side 5MB | Instant local testing without requiring immediate API keys. |
-
-### Why Supabase Free Tier is the Optimal Choice for this Architecture:
-1. **Native Role-Based Access Control (RLS)**: Easily enforce security rules at the database level so secondary admins cannot tamper with God Admin records, and regular users can only read/write their own requests.
-2. **Real-time Subscriptions**: User question form submissions appear on admin dashboards instantly without manual page refreshing.
-3. **Generous Zero-Dollar Limits**: 50,000 active users and 500MB is more than sufficient for full development, production beta, and administrative operations.
+| **Frontend & PWA** | **Vite + Vanilla JS + CSS** | Unlimited / Local | SPA routing (`/` and `/console`), liquid-glass UI, zero framework bloat. |
+| **QR Generation** | **Client-Side SVG QR Engine** | Unlimited / 100% Local | Pure JavaScript vector QR generator; zero API latency, works offline. |
+| **QR Camera Scanner** | **HTML5 Camera + BarcodeDetector API** | Unlimited / Local Device | Real-time camera stream (`getUserMedia`), scanning on phone cameras. |
+| **Hosting & CI/CD** | **Vercel (Hobby Tier)** | Unlimited deploys, 100GB bandwidth | Automatic Git build on commit (`BROHUHA/Cabix`), SSL, `/console` rewrite. |
+| **Auth & Database** | **Supabase (Free Tier)** | 50,000 MAU, 500MB DB, 2 Projects | Postgres Database, Row-Level Security (RLS), Realtime WebSocket tickets. |
+| **Local Fallback Engine** | **Structured LocalStorage / Mock DB** | Client-side 5MB | Instant offline testing of QR scanning, God Admin, and Lift units. |
 
 ---
 
-## 2. Role-Based Access Control (RBAC) Matrix
+## 4. Role-Based Access Control (RBAC) Matrix
 
-```
-                      +-----------------------------+
-                      |          GOD ADMIN          |
-                      |  (Master / Super Authority) |
-                      +--------------+--------------+
-                                     |
-                +--------------------+--------------------+
-                |                                         |
-                v                                         v
-   +------------------------+                +------------------------+
-   |    SECONDARY ADMINS    |                |    REGISTERED USERS    |
-   | (Manage Requests & Ops)|                | (Browse & Submit Forms)|
-   +------------+-----------+                +------------+-----------+
-                |                                         |
-                +--------------------+--------------------+
-                                     |
-                                     v
-                      +-----------------------------+
-                      |         GUEST MODE          |
-                      | (Public Read-Only Catalog)  |
-                      +-----------------------------+
-```
-
-| Capabilities & Permissions | Guest Mode | Registered User | Secondary Admin | God Admin |
+| Capabilities & Permissions | Guest Mode (`/`) | Client / User (`/`) | Secondary Admin (`/console`) | God Admin (`/console`) |
 | :--- | :---: | :---: | :---: | :---: |
-| Browse Cabix Services Catalog | ✅ | ✅ | ✅ | ✅ |
-| Access Service Detail Specs | ✅ | ✅ | ✅ | ✅ |
-| Submit Inquiries / Question Forms | ❌ *(Prompts Login)* | ✅ | ✅ | ✅ |
-| View Own Message Request Status | ❌ | ✅ | ✅ | ✅ |
-| Manage / Reply to User Inquiries | ❌ | ❌ | ✅ | ✅ |
-| Update Request Processing Status | ❌ | ❌ | ✅ | ✅ |
-| View All User Accounts | ❌ | ❌ | ❌ *(Or Read Only)* | ✅ |
-| Create & Assign Secondary Admins | ❌ | ❌ | ❌ | ✅ |
-| Modify Admin Permission Scopes | ❌ | ❌ | ❌ | ✅ |
-| Delete / Deactivate Admins & Users | ❌ | ❌ | ❌ | ✅ |
-| Access Master System Audit Log | ❌ | ❌ | ❌ | ✅ |
+| Browse Lift Services & Capabilities | ✅ | ✅ | ✅ | ✅ |
+| Submit Lift Maintenance Request (Question Form) | ❌ *(Prompts Login)* | ✅ | ✅ | ✅ |
+| Track Status of Submitted Requests | ❌ | ✅ | ✅ | ✅ |
+| Access Enterprise `/console` | ❌ *(Denied)* | ❌ *(Denied)* | ✅ | ✅ |
+| Scan Lift QR Tag with Camera | ❌ | ❌ | ✅ | ✅ |
+| Generate Printable Lift QR Codes | ❌ | ❌ | ❌ | ✅ |
+| View Components Installed in Lift | ❌ | ❌ | ✅ | ✅ |
+| Inspect Component Service Age & Lifespans | ❌ | ❌ | ✅ | ✅ |
+| Log New Liftwork & Component Replacement | ❌ | ❌ | ✅ | ✅ |
+| Update Maintenance Request Processing Status | ❌ | ❌ | ✅ | ✅ |
+| Create, Edit & Delete Lift Units | ❌ | ❌ | ❌ | ✅ |
+| Provision & Revoke Secondary Admins / Techs | ❌ | ❌ | ❌ | ✅ |
+| View Master System Audit Logs | ❌ | ❌ | ❌ | ✅ |
 
 ---
 
-## 3. Modular Implementation Plan
+## 5. Relational Data Models (Supabase + Local Mock Engine)
 
 ```
-+-------------------------------------------------------------------------------+
-|                       CABIX IMPLEMENTATION MODULES                            |
-|                                                                               |
-|  [Module 1] Data Models & RBAC Schema (Supabase + LocalStorage Fallback)       |
-|  [Module 2] Universal Authentication & Role Router                            |
-|  [Module 3] Public Guest Services Catalog & Login Gateways                    |
-|  [Module 4] User Question Form & Communication Pipeline                       |
-|  [Module 5] Secondary Administrator Operations Portal                         |
-|  [Module 6] God Admin Master Management Hub                                   |
-|  [Module 7] WebAPK & Free-Tier Vercel Continuous Deployment                   |
-+-------------------------------------------------------------------------------+
+┌─────────────────┐       ┌──────────────────────┐       ┌──────────────────────┐
+│  lift_units     │◄──────│   lift_components    │       │ maintenance_requests │
+│                 │1     *│                      │       │  (User Question Form)│
+│ • id            │       │ • id                 │       │ • id                 │
+│ • unit_code     │       │ • lift_id            │       │ • lift_id            │
+│ • building_name │       │ • name (e.g. Motor)  │       │ • user_id            │
+│ • model_type    │       │ • installed_date     │       │ • issue_category     │
+│ • install_date  │       │ • expected_lifespan  │       │ • description        │
+│ • qr_data       │       │ • current_status     │       │ • status (Pending..) │
+└────────┬────────┘       └──────────────────────┘       └──────────┬───────────┘
+         │1                                                         │*
+         │*                                                         │
+┌────────▼──────────────┐                                           │
+│   liftwork_logs       │◄──────────────────────────────────────────┘
+│                       │
+│ • id                  │
+│ • lift_id             │
+│ • technician_id       │
+│ • parts_replaced      │
+│ • time_period_spent   │
+│ • inspection_output   │
+└───────────────────────┘
 ```
 
----
+### Detailed Schema Entities:
 
-### Module 1: Data Models & RBAC Schema
-* **Target Files:** `src/services/db.js`, `src/services/schema.sql`
-* **Objective:** Establish clean relational entities with row-level permission logic.
+1. **`lift_units`**:
+   - `id`: UUID (Primary Key)
+   - `unit_code`: Text (e.g., `"CBX-LIFT-101"`, `"EMPIRE-TOWER-L2"`)
+   - `building_name`: Text (e.g., `"Grand Horizon Tower"`)
+   - `location_address`: Text
+   - `model_type`: Text (e.g., `"MRL Gearless Traction 2.5m/s"`, `"Hydraulic Freight"`)
+   - `capacity_kg`: Integer (e.g., `1000`)
+   - `install_date`: Date
+   - `last_service_date`: Date
+   - `status`: Enum (`'operational'`, `'maintenance_due'`, `'under_repair'`, `'out_of_service'`)
+   - `qr_data`: Text (Unique QR payload URL)
 
-#### Core Entities:
-1. **`profiles`**
-   - `id`: UUID (matches `auth.users.id`)
-   - `email`: Text
-   - `display_name`: Text (10 characters max, capitalized)
-   - `role`: Enum (`'god_admin'`, `'admin'`, `'user'`)
-   - `is_active`: Boolean
-   - `permissions`: JSONB (e.g. `{"can_reply_inquiries": true, "can_manage_services": false}`)
-   - `created_at`: Timestamp
-   - `created_by`: UUID (references `profiles.id`, tracks which God Admin created secondary admins)
-
-2. **`services`**
+2. **`lift_components`** (Parts used in liftwork):
    - `id`: UUID
-   - `title`: Text (e.g., "Executive Fleet Dispatch", "Private Chauffeur", "Airport Transfer")
-   - `category`: Text
-   - `description`: Text
-   - `price_indicator`: Text
-   - `status`: Enum (`'active'`, `'paused'`)
-   - `icon_name`: Text
+   - `lift_id`: UUID (References `lift_units.id`)
+   - `component_name`: Text (e.g., `"Traction Machine Motor"`, `"VVVF Inverter Drive"`, `"Hoist Steel Ropes"`, `"Door Operator"`, `"Safety Gear Assembly"`, `"Guide Shoes"`, `"Traveling Cable"`)
+   - `serial_number`: Text
+   - `installed_date`: Date
+   - `lifespan_months`: Integer (e.g., `36` months)
+   - `time_period_active`: Virtual/Calculated (Days / months elapsed since installation)
+   - `status`: Enum (`'good'`, `'service_soon'`, `'overdue_replacement'`)
+   - `manufacturer`: Text
 
-3. **`inquiry_requests` (The Question Form Submissions)**
+3. **`maintenance_requests`** (User Question Form Submissions):
    - `id`: UUID
-   - `user_id`: UUID (references `profiles.id`)
+   - `lift_id`: UUID (Nullable, references `lift_units.id`)
+   - `user_id`: UUID (References `profiles.id`)
    - `user_name`: Text
-   - `user_email`: Text
-   - `service_id`: UUID (nullable, references `services.id`)
-   - `subject`: Text
-   - `question_details`: JSONB / Text (answers from structured question form)
-   - `priority`: Enum (`'normal'`, `'urgent'`)
-   - `status`: Enum (`'pending'`, `'in_review'`, `'contacted'`, `'resolved'`, `'rejected'`)
-   - `admin_notes`: Text
-   - `assigned_admin_id`: UUID (references `profiles.id`)
+   - `building_name`: Text
+   - `issue_category`: Enum (`'abnormal_noise'`, `'door_fault'`, `'leveling_error'`, `'emergency_stoppage'`, `'routine_maintenance'`, `'general_inquiry'`)
+   - `questionnaire_answers`: JSONB (Answers to the detailed question form)
+   - `priority`: Enum (`'normal'`, `'urgent'`, `'emergency'`)
+   - `status`: Enum (`'pending'`, `'in_review'`, `'dispatched'`, `'resolved'`)
    - `created_at`: Timestamp
-   - `updated_at`: Timestamp
+
+4. **`liftwork_logs`** (Technician Inspection & Service Records):
+   - `id`: UUID
+   - `lift_id`: UUID (References `lift_units.id`)
+   - `request_id`: UUID (Nullable, references `maintenance_requests.id`)
+   - `technician_id`: UUID (References `profiles.id`)
+   - `service_date`: Timestamp
+   - `time_period_hours`: Decimal (Hours spent on liftwork)
+   - `components_replaced`: JSONB (Array of component IDs/names replaced)
+   - `inspection_output`: Text (e.g., `"Brake clearance adjusted to 0.4mm. Rope tension normalized."`)
+   - `safety_check_passed`: Boolean
 
 ---
 
-### Module 2: Universal Authentication & Dynamic Role Router
-* **Target Files:** `src/main.js`, `index.html`, `src/style.css`
-* **Objective:** Seamless gateway that directs sessions to the appropriate view based on authenticated role.
+## 6. Modular Implementation Status
 
-#### Workflow:
-1. **Session Check on App Launch**:
-   - `role === 'god_admin'` $\rightarrow$ Render **God Admin Control Hub** (`#view-god-admin`).
-   - `role === 'admin'` $\rightarrow$ Render **Admin Operations Portal** (`#view-admin`).
-   - `role === 'user'` $\rightarrow$ Render **User Services & Inquiries Portal** (`#view-user-portal`).
-   - Unauthenticated $\rightarrow$ Default to **Guest Services Showcase** (`#view-services-showcase`) or **Login Gate** (`#view-login`).
-2. **Switching / Logout**:
-   - Any screen provides a top-bar lock / switch button.
-   - God Admin and Admins can simulate "View as User" or "View as Guest" for testing.
-
----
-
-### Module 3: Guest & User Services Catalog
-* **Target Files:** `index.html`, `src/style.css`, `src/services/servicesRenderer.js`
-* **Objective:** Clean, elegant service showcase accessible by guests and users.
-
-#### Key Features:
-- **Guest Mode Experience**:
-  - Unlocked browsing of all Cabix services with interactive cards.
-  - Prominent **"Connect with Admin"** or **"Request Service"** button on each service card.
-  - Tapping action button triggers an executive glass modal:  
-    *"Authentication Required: Please sign in or create an account to submit inquiries and connect directly with Cabix Administration."*
-- **Logged-in User Experience**:
-  - Tapping **"Connect"** directly launches the structured **Question Form Modal**.
+```
++---------------------------------------------------------------------------------------+
+|                               CABIX IMPLEMENTATION PHASES                             |
+|                                                                                       |
+|  [Module 1] Database & State Engine (Supabase Schema + Mock DB)       [DONE - COMPLETED]|
+|  [Module 2] Dual Portal Router (/ vs /console) & URL Dispatcher       [DONE - COMPLETED]|
+|  [Module 3] Client Portal (/) - Lift Status & Question Request Form   [DONE - COMPLETED]|
+|  [Module 4] Enterprise Console (/console) - High-Security God/Admin   [DONE - COMPLETED]|
+|  [Module 5] Camera QR Code Scanner & Instant Lift Profile Resolver    [DONE - COMPLETED]|
+|  [Module 6] QR Code Generator (SVG Printable Badges)                  [DONE - COMPLETED]|
+|  [Module 7] Liftwork Component Lifecycle (Time Periods & Lifespans)   [DONE - COMPLETED]|
+|  [Module 8] Maintenance Request Management Queue & Ticket Dispatch    [DONE - COMPLETED]|
+|  [Module 9] God Admin Master Team Provisioning & Audit Trail          [DONE - COMPLETED]|
+|  [Module 10] Free-Tier Deployment & Live PWA WebAPK OTA Updates       [DONE - READY]    |
++---------------------------------------------------------------------------------------+
+```
 
 ---
 
-### Module 4: Structured Question Form & Inquiry Pipeline
-* **Target Files:** `index.html`, `src/main.js`, `src/components/inquiryModal.js`
-* **Objective:** User-friendly question questionnaire that packages user requests directly to the admin queue.
+## 7. Operational Portals & Testing Access
 
-#### Question Form Architecture:
-- **Step 1: Inquiry Type**: Select service (or general administrative inquiry).
-- **Step 2: Core Questionnaire**:
-  - What is the primary purpose? (Business, Corporate, Personal, Event)
-  - Estimated timeline or frequency?
-  - Specific questions or custom requirements?
-- **Step 3: Contact Preference**: Preferred communication channel (Email, Phone/SMS, In-App).
-- **Confirmation & Live Tracking**: User receives an instant inquiry tracking badge (`#CBX-XXXX`) with live status pill (`Pending Review`).
+The application runs locally on `http://localhost:5173/` and is ready for manual testing or Vercel production deployment:
 
----
+1. **Client Mobile WebAPK Portal (`http://localhost:5173/`):**
+   - **Credentials:** `user@cabix.app` / `user123` or 1-tap **"Browse Services as Guest"**.
+   - **Features:** 
+     - Live Facility monitoring for **Grand Horizon Tower**.
+     - Building Lift Unit cards (`CBX-LIFT-101`, `102`, `103`) with specifications.
+     - **Structured Maintenance Question Form Modal**: Select elevator unit, choose issue category (Noise, Door, Leveling, Stoppage, Routine), answer questionnaire (Location, Frequency, Ride Impact), toggle priority dispatch, and submit.
+     - **My Inquiries & Tickets**: Live ticket badge (`#CBX-REQ-xxxx`), real-time status pill (`Pending`, `In Review`, `Tech Dispatched`), and technician notes.
+     - **Engineering Services Catalog**: Preventative maintenance, modernization, QR lifecycle audit, and emergency entrapment rescue.
+     - **Guest Intercept Modal**: Intercepts guest actions when attempting to submit requests or connect with engineers.
 
-### Module 5: Secondary Administrator Operations Portal
-* **Target Files:** `index.html`, `src/style.css`, `src/admin/adminPortal.js`
-* **Objective:** Efficient workstation for secondary admins to respond to user requests.
-
-#### Core Panels:
-1. **Inquiry Queue (Live Message Board)**:
-   - Filter by: `All`, `Pending`, `Contacted`, `Resolved`.
-   - Card displays: User name, submission timestamp, service type, urgent flags.
-2. **Inquiry Detail & Response Drawer**:
-   - View full answers to the user's question form.
-   - Internal admin notes (shared between admins).
-   - Quick action: Mark as `Contacted`, `Resolved`, or trigger email response.
-3. **Services Status Toggles**:
-   - Toggle service availability (e.g., mark a service as temporarily booked/unavailable).
-
----
-
-### Module 6: God Admin Master Management Hub
-* **Target Files:** `index.html`, `src/style.css`, `src/admin/godAdmin.js`
-* **Objective:** Supreme command center for the master administrator.
-
-#### Exclusive God Admin Capabilities:
-1. **Admin Team Management**:
-   - **Add Secondary Admin**: Form with Email, Temporary Password, Name, and Permission toggles.
-   - **Admin Roster**: Table/Cards of all admins showing status (Active/Suspended), last login date, and assigned inquiries count.
-   - **Deactivate / Revoke Admin**: 1-tap suspension with immediate session termination.
-2. **User Directory**:
-   - View all registered users and their total inquiries count.
-   - Ability to ban abusive or spam accounts.
-3. **Service Catalog Editor**:
-   - Add new Cabix services, edit titles, pricing indicators, and descriptions.
-4. **Master Audit Trail**:
-   - Chronological log of which admin answered which ticket, and when accounts were provisioned.
-
----
-
-### Module 7: Free-Tier Deployment & Live Updates
-* **Target Files:** `vercel.json`, `public/sw.js`, `public/manifest.webmanifest`
-* **Objective:** Zero-cost deployment with live Over-The-Air updates.
-
-1. **Vercel Hobby Tier**: Connected to `BROHUHA/Cabix` on GitHub for instant automatic deployments.
-2. **Supabase Free Project**:
-   - Direct connection via client library `createClient(SUPABASE_URL, SUPABASE_ANON_KEY)`.
-   - Database secrets stored safely in Vercel environment variables.
-3. **Local Hybrid Mode**: Includes mock fallback data so developers can inspect and test God Admin, Admin, User, and Guest flows offline without waiting for cloud credentials.
-
----
-
-## 4. Immediate Next Step
-
-Now that the blueprint is locked in `MODEL.md`:
-1. Provide the specific question form fields and questions you want included.
-2. Confirm if you want to initialize the local mock RBAC first (so you can immediately test God Admin $\leftrightarrow$ Secondary Admin $\leftrightarrow$ User $\leftrightarrow$ Guest switching on your screen).
+2. **Enterprise Engineering Console (`http://localhost:5173/#console` or `/console`):**
+   - **God Admin:** `god@cabix.app` / `god1234` (Full authority: Provision/revoke admins, lift management, audit trail).
+   - **Tech Lead Admin:** `admin@cabix.app` / `admin123` (Field authority: QR scanner, component inspection, ticket dispatcher).
+   - **Features:**
+     - Real-time HTML5 Camera QR Scanner & manual unit resolver.
+     - Component Lifecycle Inspector tracking active operating time periods (days/months) and replacement warnings.
+     - Inquiries Queue managing tickets submitted by users from `/`.
+     - God Admin Team Provisioner & Audit Log.
+     - Printable SVG Vector QR Badge Generator.

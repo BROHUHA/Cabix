@@ -1,6 +1,6 @@
 {
-  "name": "Artisan Roastery - Administrative Portal",
-  "short_name": "Roastery",
+  "name": "Cabix - Elevator Engineering & Lifecycle Portal",
+  "short_name": "Cabix",
   "start_url": "/",
   "scope": "/",
   "id": "/",
@@ -9,8 +9,8 @@
   "orientation": "portrait-primary",
   "theme_color": "#0e0604",
   "background_color": "#0e0604",
-  "description": "Artisan coffee roastery administrative portal with beverage analytics, shift records, and barista credentials.",
-  "categories": ["food", "business", "productivity"],
+  "description": "Cabix Elevator Engineering, Component Lifecycle Management, Technical Inspection & Maintenance Operations.",
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
       "src": "/assets/icons/icon-192.png",
@@ -35,12 +35,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "/assets/icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
     }
   ]
 }

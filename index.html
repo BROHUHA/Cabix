@@ -3,26 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content">
-  <title>Artisan Roastery - Administrative Portal</title>
-  <meta name="description" content="Artisan Roastery Administrative Portal with beverage analytics, shift records, and barista credentials.">
+  <title>Cabix - Elevator Engineering & Lifecycle Management</title>
+  <meta name="description" content="Cabix Elevator Lifecycle Management, Component Tracking & Maintenance WebAPK.">
   <meta name="theme-color" content="#0e0604">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Roastery">
-  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
-  <link rel="apple-touch-icon" href="/assets/icons/icon.svg">
+  <meta name="apple-mobile-web-app-title" content="Cabix">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/icon-192.png">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="/assets/fonts/neue-haas-unica/stylesheet.css">
   <link rel="stylesheet" href="/assets/fonts/helvetica-now/stylesheet.css">
   <link rel="stylesheet" href="/src/style.css">
+  <link rel="stylesheet" href="/src/console/console.css">
 </head>
 <body>
+  <!-- ROUTE 1: CLIENT MOBILE APPLICATION (/) -->
+  <div id="view-client-app">
   <main class="page-container">
     
     <!-- Top tagline above phone -->
     <header class="app-header">
-      <h1 class="header-tagline">Secure login to accept<br>card and cash payments.</h1>
+      <h1 class="header-tagline">Cabix &bull; Elevator Engineering & Lifecycle Management</h1>
+      <div class="mobile-network-pill">
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+          Open on Mobile: <a href="http://10.112.240.220:5173" target="_blank">http://10.112.240.220:5173</a>
+        </span>
+      </div>
     </header>
 
     <!-- Phone Mockup Frame -->
@@ -62,32 +75,10 @@
               </div>
             </div>
 
-            <!-- Artisan Coffee Roastery Brand Crest & Portal Header -->
+            <!-- Cabix Lift Systems Brand Header -->
             <div class="cafe-brand-header">
-              <div class="cafe-brand-crest glass" data-liquid aria-label="Artisan Coffee Roastery Crest">
-                <svg class="coffee-cup-svg" width="46" height="46" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Steaming curls -->
-                  <path class="steam steam-1" d="M18 10C16.8 8 16.8 5.8 18 3.8" stroke="#f5c285" stroke-width="2.2" stroke-linecap="round"/>
-                  <path class="steam steam-2" d="M24 9.5C22.6 7 22.6 4.6 24 2.2" stroke="#e0a96d" stroke-width="2.5" stroke-linecap="round"/>
-                  <path class="steam steam-3" d="M30 10C28.8 8 28.8 5.8 30 3.8" stroke="#f5c285" stroke-width="2.2" stroke-linecap="round"/>
-                  <!-- Cup Body with rich espresso crema gradient -->
-                  <path d="M11 16H33V28C33 33.5 28.5 38 23 38C17.5 38 13 33.5 13 28V16" fill="url(#coffeeCupGrad)" stroke="#f5c285" stroke-width="1.8"/>
-                  <!-- Cup Handle -->
-                  <path d="M33 19.5H36.5C38.9853 19.5 41 21.5147 41 24C41 26.4853 38.9853 28.5 36.5 28.5H33" stroke="#f5c285" stroke-width="2.2" stroke-linecap="round"/>
-                  <!-- Saucer Base -->
-                  <path d="M7 40C7 39.4477 7.44772 39 8 39H38C38.5523 39 39 39.4477 39 40C39 41.6569 37.6569 43 36 43H10C8.34315 43 7 41.6569 7 40Z" fill="#180a06" stroke="#f5c285" stroke-width="1.8"/>
-                  <!-- Golden Crema Surface -->
-                  <ellipse cx="23" cy="18" rx="8" ry="2.2" fill="#d97706" opacity="0.85"/>
-                  <defs>
-                    <linearGradient id="coffeeCupGrad" x1="13" y1="16" x2="33" y2="38" gradientUnits="userSpaceOnUse">
-                      <stop stop-color="#2d1309"/>
-                      <stop offset="1" stop-color="#120603"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-              <h2 class="cafe-brand-title">Artisan Roastery</h2>
-              <p class="cafe-brand-subtitle">Administrative & Barista Portal</p>
+              <h2 class="cafe-brand-title" title="Triple-tap for Engineering Console">Cabix</h2>
+              <p class="cafe-brand-subtitle">Elevator Engineering & Maintenance Portal</p>
             </div>
 
             <!-- Login Form -->
@@ -102,8 +93,8 @@
                   </svg>
                 </div>
                 <div class="input-col">
-                  <label for="td-email" class="td-label">Email</label>
-                  <input type="text" id="td-email" class="td-input" value="ajinaju68@gmail.com" inputmode="email" autocomplete="email" />
+                  <label for="td-email" class="td-label">Account Email</label>
+                  <input type="text" id="td-email" class="td-input" value="user@cabix.app" inputmode="email" autocomplete="email" />
                 </div>
               </div>
 
@@ -117,25 +108,29 @@
                 </div>
                 <div class="input-col">
                   <label for="td-password" class="td-label">Password</label>
-                  <input type="password" id="td-password" class="td-input" value="11223344" autocomplete="current-password" />
+                  <input type="password" id="td-password" class="td-input" value="user123" autocomplete="current-password" />
                 </div>
               </div>
 
-              <!-- Remember Email Checkbox -->
-              <div class="td-checkbox-row">
-                <label class="td-checkbox-label">
-                  <input type="checkbox" id="td-remember" checked />
-                  <span class="checkbox-custom"></span>
-                  <span class="checkbox-text">Remember Email</span>
-                </label>
+              <!-- Credentials Quick Hint -->
+              <div class="creds-hint-pill" style="display: flex; flex-direction: column; gap: 6px; text-align: left; padding: 10px 14px;">
+                <div>
+                  <span>Approved Client 1: <code style="cursor: pointer;" title="Click to fill" onclick="document.getElementById('td-email').value='user@cabix.app'; document.getElementById('td-password').value='user123';">user@cabix.app</code> (Abin)</span>
+                </div>
+                <div style="border-top: 1px solid rgba(255,255,255,0.07); padding-top: 5px;">
+                  <span>Approved Client 2: <code style="cursor: pointer;" title="Click to fill" onclick="document.getElementById('td-email').value='client@cabix.app'; document.getElementById('td-password').value='user123';">client@cabix.app</code> (Elena)</span>
+                </div>
+                <div style="border-top: 1px solid rgba(255,255,255,0.07); padding-top: 5px; opacity: 0.85;">
+                  <span>Unapproved Demo: <code style="cursor: pointer;" title="Click to fill" onclick="document.getElementById('td-email').value='pending@cabix.app'; document.getElementById('td-password').value='user123';">pending@cabix.app</code> (Marcus)</span>
+                </div>
               </div>
 
               <!-- Feedback message -->
               <div id="login-feedback" class="login-feedback"></div>
 
-              <!-- Bottom Form Actions (Positioned on bottom) -->
+              <!-- Bottom Form Actions -->
               <div class="td-form-actions">
-                <!-- Sign In Button (Styled exactly like inner UI liquid glass capsules) -->
+                <!-- Sign In Button -->
                 <button type="button" id="btn-signin" class="td-signin-btn glass" data-liquid onclick="window.handleDirectLogin && window.handleDirectLogin(event);">
                   <span>Sign In</span>
                 </button>
@@ -146,45 +141,45 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
-                  <span>Continue as Guest</span>
+                  <span>Browse Services as Guest</span>
                 </button>
 
-                <!-- Forgot Password Link -->
-                <a href="#" id="forgot-link" class="td-forgot-link">Forgot Password?</a>
+                <!-- Quick Switch to Console -->
+                <a href="#console" class="td-forgot-link">Engineering Console Access (/console)</a>
               </div>
             </form>
           </div>
 
-          <!-- VIEW 2: PROFILE DASHBOARD (COFFEE PROFILE & ADMIN ROLE) -->
+          <!-- VIEW 2: PROFILE HERO, WORKS & ADMIN LIVE CHAT -->
           <div id="view-profile" class="view-screen">
             
-            <!-- Hero Section -->
+            <!-- Hero Section (Faithful to Reference Image 1) -->
             <section class="hero-section">
               <video class="hero-video" autoplay loop muted playsinline>
                 <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260707_003042_3d2380a6-1ce6-4407-a2e2-cfec46546407.mp4" type="video/mp4">
               </video>
               <div class="hero-overlay"></div>
               
-              <!-- Top bar -->
+              <!-- Top bar (Cabix Logo Left, Action Toggles Right) -->
               <div class="top-bar">
-                <button type="button" id="btn-top-action" class="glass circle btn-edit" data-liquid aria-label="Edit Profile" onclick="window.handleTopAction && window.handleTopAction(event);">
-                  <span id="top-action-icon">
+                <div class="top-bar-logo">Cabix</div>
+                
+                <div class="top-bar-right">
+                  <button type="button" id="btn-top-action" class="glass circle btn-edit" data-liquid aria-label="Edit Name" onclick="window.openMinimalNameModal && window.openMinimalNameModal();">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M12 20h9"></path>
                       <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                     </svg>
-                  </span>
-                </button>
-                
-                <div class="top-bar-right">
-                  <button type="button" id="btn-logout" class="glass circle btn-profile" data-liquid aria-label="Logout / Switch User" title="Logout to TD Login" onclick="window.handleBackToLogin && window.handleBackToLogin(event);">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
                   </button>
 
-                  <button type="button" id="btn-back-login" class="glass circle btn-close" data-liquid aria-label="Lock / Exit to Login" title="Lock Screen" onclick="window.handleBackToLogin && window.handleBackToLogin(event);">
+                  <a href="#console" class="glass circle btn-console-shortcut" data-liquid title="Engineering Console" aria-label="Console">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </a>
+
+                  <button type="button" id="btn-back-login" class="glass circle btn-close" data-liquid aria-label="Lock / Exit" title="Lock Screen" onclick="window.handleBackToLogin && window.handleBackToLogin(event);">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <line x1="18" y1="6" x2="6" y2="18"></line>
                       <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -194,137 +189,403 @@
               </div>
             </section>
 
-            <!-- Identity Section -->
+            <!-- Identity Section (Reference Image 1) -->
             <section class="identity-section">
-              <!-- Admin Role Pill -->
-              <div class="admin-role-badge">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+              <!-- Dynamic Role Pill -->
+              <div class="admin-role-badge" id="hero-role-badge">
+                <svg id="hero-role-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <polyline points="9 12 11 14 15 10"></polyline>
                 </svg>
-                <span>ADMINISTRATIVE ROLE</span>
+                <span id="hero-role-text">ADMINISTRATIVE ROLE</span>
               </div>
 
               <div class="name-container">
                 <img class="laurel laurel-left" src="/assets/images/laurel-left.png" alt="Left laurel branch" />
-                <h1 class="user-name">Dasha</h1>
+                <h1 class="user-name" id="hero-user-name">Abin</h1>
                 <img class="laurel laurel-right" src="/assets/images/laurel-right.png" alt="Right laurel branch" />
               </div>
-              <p class="user-subtitle">Plum Parfait Latte</p>
+              <p class="user-subtitle" id="hero-user-subtitle">Grand Horizon Tower &bull; Certified Operations</p>
             </section>
 
-            <!-- Achievements Pill -->
-            <div class="achievements-container">
-              <button class="glass pill achievements-pill" data-liquid aria-label="12 achievements">
-                <img src="/assets/images/icon-trophy.png" alt="Trophy icon" class="trophy-icon" />
-                <span class="achievements-text">12 achievements</span>
+            <!-- Bottom of Hero: Anti-Spam Access Request Button (for Unapproved Users) -->
+            <div class="hero-request-container" id="hero-request-container">
+              <button type="button" id="btn-request-access" class="glass hero-request-btn" data-liquid onclick="window.handleRequestAccess && window.handleRequestAccess(event);">
+                <svg class="req-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+                </svg>
+                <span id="btn-request-access-label">Request Access Approval</span>
               </button>
             </div>
 
-            <!-- Stats Grid -->
-            <section class="stats-grid">
-              <div class="stat-card card-1">
-                <img src="https://polo-pecan-73837341.figma.site/_assets/v11/a8ba62db54d1e331b7beb36d69308e9b92516b99.png" alt="Coffee drink" class="stat-image" />
-                <span class="stat-number">154</span>
-                <span class="stat-label">drinks consumed</span>
-              </div>
+            <!-- Approved Section (Shown when Approved) -->
+            <div id="approved-content-wrapper" class="approved-content-wrapper">
               
-              <div class="stat-card card-2">
-                <img src="https://polo-pecan-73837341.figma.site/_assets/v11/953600065119f54f64ab9edb076b3cbb289fcff8.png" alt="Sandwich" class="stat-image" />
-                <span class="stat-number">36</span>
-                <span class="stat-label">sandwiches eaten</span>
-              </div>
-              
-              <div class="stat-card card-3">
-                <img src="https://polo-pecan-73837341.figma.site/_assets/v11/aef68e05f729a30ed177f74c2cece578c05bfdba.png" alt="Cafe" class="stat-image" />
-                <span class="stat-number">12</span>
-                <span class="stat-label">cafes visited</span>
-              </div>
-            </section>
-
-            <!-- Favorite Card -->
-            <section class="favorite-card">
-              <img src="https://polo-pecan-73837341.figma.site/_assets/v11/976a811111808abc50be33c2483872dbdb6ad5a8.png" alt="Latte" class="favorite-image" />
-              <div class="favorite-info">
-                <span class="favorite-badge">Favorite</span>
-                <h2 class="favorite-title">Latte</h2>
-                <span class="favorite-count">Ordered 73 times</span>
-              </div>
-              <button class="glass circle btn-shuffle" data-liquid aria-label="Shuffle favorite drink">
-                <img src="/assets/images/icon-shuffle.png" alt="Shuffle icon" class="shuffle-icon" />
-              </button>
-            </section>
-
-            <!-- Partial Next Card -->
-            <div class="next-card-teaser" aria-hidden="true"></div>
-
-          </div>
-
-          <!-- Edit Username Liquid Glass Modal -->
-          <div id="modal-edit-username" class="modal-backdrop" aria-hidden="true">
-            <div class="glass-modal">
-              <div class="modal-header">
-                <div class="modal-icon-badge glass">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 20h9"></path>
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              <!-- Post-Approval Actions Bar: Add New Work & Scan QR -->
+              <div class="approved-actions-row">
+                <button type="button" class="glass action-pill-btn" data-liquid onclick="window.handleOpenRequestModal && window.handleOpenRequestModal();">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2.2" stroke-linecap="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
-                </div>
-                <h3 class="modal-title">Edit Barista Name</h3>
-                <p class="modal-subtitle">Customize your displayed profile name</p>
+                  <span>Add New Work</span>
+                </button>
+
+                <button type="button" class="glass action-pill-btn" data-liquid onclick="window.handleOpenClientQrScanner && window.handleOpenClientQrScanner();">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                  </svg>
+                  <span>Scan QR</span>
+                </button>
               </div>
-              <form id="form-edit-username" onsubmit="window.saveUsername(event); return false;">
-                <div class="td-input-group modal-input-group">
-                  <div class="icon-col">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
+
+              <!-- Works Stats Grid (Elevator Engineering Lifecycle Metrics) -->
+              <section class="stats-grid">
+                <div class="stat-card card-1">
+                  <img src="/assets/images/elevator_works.jpg" alt="Works completed" class="stat-image" />
+                  <span class="stat-number" id="stats-works-count">154</span>
+                  <span class="stat-label">works completed</span>
+                </div>
+                
+                <div class="stat-card card-2">
+                  <img src="/assets/images/elevator_inspection.jpg" alt="Active inspections" class="stat-image" />
+                  <span class="stat-number" id="stats-inspections-count">36</span>
+                  <span class="stat-label">active inspections</span>
+                </div>
+                
+                <div class="stat-card card-3">
+                  <img src="/assets/images/elevator_tower.jpg" alt="Lifts monitored" class="stat-image" />
+                  <span class="stat-number" id="stats-lifts-count">12</span>
+                  <span class="stat-label">lifts monitored</span>
+                </div>
+              </section>
+
+              <!-- Active Work Card (Primary Work Order) -->
+              <section class="favorite-card">
+                <img src="/assets/images/elevator_cabin.jpg" alt="Primary Elevator Work Order" class="favorite-image" id="active-work-img" />
+                <div class="favorite-info">
+                  <span class="favorite-badge">Primary Work Order</span>
+                  <h2 class="favorite-title" id="active-work-title">CBX-LIFT-101</h2>
+                  <span class="favorite-count" id="active-work-desc">MRL Traction &bull; 18 Landings Verified</span>
+                </div>
+                <button class="glass circle btn-shuffle" data-liquid aria-label="Shuffle work order" onclick="window.shuffleActiveWork && window.shuffleActiveWork();">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                  </svg>
+                </button>
+              </section>
+
+              <!-- Admin Live Chat Trigger Button -->
+              <div class="chat-trigger-container">
+                <button type="button" id="btn-open-live-chat" class="glass chat-trigger-btn" data-liquid onclick="window.openLiveChatModal && window.openLiveChatModal();">
+                  <div class="chat-btn-left">
+                    <div class="chat-btn-icon-box">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                    </div>
+                    <div class="chat-btn-text-col">
+                      <span class="chat-btn-title">Admin Live Chat</span>
+                      <span class="chat-btn-sub">Direct link with on-site engineers</span>
+                    </div>
+                  </div>
+                  <div class="chat-btn-right">
+                    <span class="chat-pulse-dot"></span>
+                    <span class="chat-online-label">Online</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6; margin-left: 2px;">
+                      <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
                   </div>
-                  <div class="input-col">
-                    <label for="input-edit-username" class="td-label">Username</label>
-                    <input type="text" id="input-edit-username" class="td-input" maxlength="10" placeholder="e.g. Dasha" required autocomplete="off" />
+                </button>
+              </div>
+
+            </div>
+
+            <div style="height: 36px;"></div>
+          </div>
+
+          <!-- ENTIRE ADMIN LIVE CHAT WINDOW MODAL -->
+          <div id="modal-live-chat" class="modal-backdrop chat-window-backdrop" aria-hidden="true">
+            <div class="glass-modal chat-full-window">
+              
+              <!-- Chat Window Header -->
+              <div class="chat-window-header">
+                <div class="chat-header-title" style="display: flex; align-items: center; gap: 10px;">
+                  <div class="modal-icon-badge glass" style="margin: 0; width: 38px; height: 38px; border-radius: 12px;">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
                   </div>
-                  <span class="char-counter" id="edit-username-counter">0/10</span>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 15px; font-weight: 700; color: #ffffff;">Admin Live Chat</span>
+                    <span style="font-size: 11px; color: #4ade80; display: flex; align-items: center; gap: 5px; margin-top: 1px;">
+                      <span class="chat-pulse-dot"></span> Technicians Online &bull; Direct Dispatch
+                    </span>
+                  </div>
                 </div>
-                <div class="modal-actions">
-                  <button type="button" class="glass modal-btn-cancel" onclick="window.closeEditUsernameModal();">Cancel</button>
-                  <button type="submit" class="glass modal-btn-save">Save</button>
-                </div>
+                
+                <button type="button" class="glass circle chat-window-close-btn" data-liquid aria-label="Close Chat" onclick="window.closeLiveChatModal && window.closeLiveChatModal();">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Full Chat Messages Feed -->
+              <div class="chat-messages-feed chat-window-feed" id="chat-messages-feed">
+                <!-- Dynamic from cabixDB.getChatMessages() -->
+              </div>
+
+              <!-- Chat Input Form -->
+              <form class="chat-input-form chat-window-form" onsubmit="window.handleSendChatMessage && window.handleSendChatMessage(event); return false;">
+                <input type="text" id="chat-input-text" class="chat-input-field" placeholder="Message technicians directly..." autocomplete="off" />
+                <button type="submit" class="glass chat-send-btn" aria-label="Send Message">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
               </form>
+
             </div>
           </div>
 
-          <!-- First-Time Login Welcome Modal (10 letters max) -->
+          <!-- MINIMAL "ENTER YOUR NAME" MODAL -->
           <div id="modal-first-login" class="modal-backdrop" aria-hidden="true">
-            <div class="glass-modal first-login-modal">
-              <div class="modal-header">
+            <div class="glass-modal minimal-name-modal">
+              <div class="modal-header minimal-header">
                 <div class="modal-icon-badge glass">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                 </div>
-                <h3 class="modal-title">Welcome, Barista!</h3>
-                <p class="modal-subtitle">Choose your display name to personalize your portal</p>
+                <h3 class="modal-title">Enter Your Name</h3>
               </div>
-              <form id="form-first-login" onsubmit="window.saveFirstLoginUsername(event); return false;">
-                <div class="td-input-group modal-input-group">
-                  <div class="icon-col">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                  </div>
+              <form id="form-first-login" onsubmit="window.saveMinimalUsername && window.saveMinimalUsername(event); return false;">
+                <div class="td-input-group modal-input-group minimal-input-group">
                   <div class="input-col">
-                    <label for="input-first-username" class="td-label">Username</label>
-                    <input type="text" id="input-first-username" class="td-input" maxlength="10" placeholder="e.g. Dasha" required autocomplete="off" />
+                    <input type="text" id="input-first-username" class="td-input" maxlength="10" placeholder="e.g. Abin" required autocomplete="off" />
                   </div>
                   <span class="char-counter" id="first-username-counter">0/10</span>
                 </div>
                 <div class="modal-actions">
-                  <button type="submit" class="glass modal-btn-save full-width">Continue to Profile</button>
+                  <button type="submit" class="glass modal-btn-save full-width">Continue</button>
                 </div>
               </form>
+            </div>
+          </div>
+
+          <!-- QUESTION FORM MODAL (ZERO EMOJIS, PURE SVG) -->
+          <div id="modal-question-form" class="modal-backdrop" aria-hidden="true">
+            <div class="glass-modal question-modal">
+              <div class="modal-header">
+                <div class="modal-icon-badge glass">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                  </svg>
+                </div>
+                <h3 class="modal-title">Maintenance Request</h3>
+                <p class="modal-subtitle">Direct dispatch to Cabix Certified Technicians</p>
+              </div>
+
+              <form id="form-question-request" onsubmit="window.handleSubmitQuestionForm && window.handleSubmitQuestionForm(event); return false;">
+                
+                <!-- Target Lift Unit -->
+                <div class="q-form-group">
+                  <label class="q-label">Select Elevator Unit</label>
+                  <select id="q-input-lift" class="q-select glass">
+                    <!-- Populated from cabixDB.getLifts() -->
+                  </select>
+                </div>
+
+                <!-- Issue Category Selection (Crisp Vector SVG Chips) -->
+                <div class="q-form-group">
+                  <label class="q-label">Issue Category</label>
+                  <div class="q-category-chips">
+                    <label class="q-chip">
+                      <input type="radio" name="q-category" value="abnormal_noise" checked>
+                      <span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        Noise / Vibration
+                      </span>
+                    </label>
+                    <label class="q-chip">
+                      <input type="radio" name="q-category" value="door_fault">
+                      <span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                        Door Malfunction
+                      </span>
+                    </label>
+                    <label class="q-chip">
+                      <input type="radio" name="q-category" value="leveling_error">
+                      <span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                        Floor Leveling
+                      </span>
+                    </label>
+                    <label class="q-chip">
+                      <input type="radio" name="q-category" value="emergency_stoppage">
+                      <span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        Out of Service
+                      </span>
+                    </label>
+                    <label class="q-chip">
+                      <input type="radio" name="q-category" value="routine_maintenance">
+                      <span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                        Routine Service
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Questionnaire 1: Location -->
+                <div class="q-form-group">
+                  <label class="q-label">Specific Location in Lift</label>
+                  <div class="q-radio-grid">
+                    <label class="q-radio-box">
+                      <input type="radio" name="q-loc" value="Cabin Interior" checked>
+                      <span>Cabin Interior</span>
+                    </label>
+                    <label class="q-radio-box">
+                      <input type="radio" name="q-loc" value="Landing Door / Hall">
+                      <span>Landing Door</span>
+                    </label>
+                    <label class="q-radio-box">
+                      <input type="radio" name="q-loc" value="Shaft / Hoistway">
+                      <span>Shaft Hoistway</span>
+                    </label>
+                    <label class="q-radio-box">
+                      <input type="radio" name="q-loc" value="Machine Room">
+                      <span>Machine Room</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Questionnaire 2: When Observed -->
+                <div class="q-form-group">
+                  <label class="q-label">Occurrence Frequency</label>
+                  <select id="q-input-frequency" class="q-select glass">
+                    <option value="Continuous / Constant">Continuous / Constant</option>
+                    <option value="Peak Morning Hours (8:00 AM - 10:00 AM)">Peak Morning Hours (8:00 AM - 10:00 AM)</option>
+                    <option value="Intermittent / Random">Intermittent / Occasional</option>
+                    <option value="Just started today">Just started today</option>
+                  </select>
+                </div>
+
+                <!-- Questionnaire 3: Ride Quality / Impact -->
+                <div class="q-form-group">
+                  <label class="q-label">Impact on Ride Quality</label>
+                  <select id="q-input-impact" class="q-select glass">
+                    <option value="Ride feels smooth, but noise concerns passengers">Smooth, but noise concerns passengers</option>
+                    <option value="Jerky motion / vibration felt during ride">Jerky motion / vibration felt</option>
+                    <option value="Door cycles multiple times before closing">Door cycling / slow closing</option>
+                    <option value="Elevator completely shut down / passengers trapped">Critical / Out of service</option>
+                  </select>
+                </div>
+
+                <!-- Urgency Toggle -->
+                <div class="q-form-group">
+                  <label class="q-checkbox-label">
+                    <input type="checkbox" id="q-input-urgent">
+                    <span class="q-checkbox-custom"></span>
+                    <span class="q-checkbox-text">Mark as Priority Dispatch (Within 2 Hours)</span>
+                  </label>
+                </div>
+
+                <!-- Detailed Description -->
+                <div class="q-form-group">
+                  <label class="q-label" for="q-input-desc">Additional Notes & Symptoms</label>
+                  <textarea id="q-input-desc" class="q-textarea glass" rows="3" placeholder="Describe the symptoms or unusual behavior observed in the elevator..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                  <button type="button" class="glass modal-btn-cancel" onclick="window.closeQuestionModal && window.closeQuestionModal();">Cancel</button>
+                  <button type="submit" class="glass modal-btn-save">Submit Request</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- GUEST PROMPT MODAL (ZERO EMOJIS) -->
+          <div id="modal-guest-prompt" class="modal-backdrop" aria-hidden="true">
+            <div class="glass-modal guest-prompt-modal">
+              <div class="modal-header">
+                <div class="modal-icon-badge glass">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
+                <h3 class="modal-title">Sign In Required</h3>
+                <p class="modal-subtitle">Guest Mode provides preview of services. Sign in with a client account to submit maintenance requests and track live technician dispatch.</p>
+              </div>
+
+              <div class="guest-prompt-actions">
+                <button type="button" class="glass modal-btn-save full-width" onclick="window.handleQuickDemoClientLogin && window.handleQuickDemoClientLogin();">
+                  <span>Sign in as Client (user@cabix.app)</span>
+                </button>
+                <button type="button" class="glass modal-btn-cancel full-width" style="margin-top: 10px;" onclick="window.handleBackToLogin && window.handleBackToLogin();">
+                  <span>Return to Login Screen</span>
+                </button>
+                <button type="button" class="guest-prompt-close-link" onclick="window.closeGuestPromptModal && window.closeGuestPromptModal();">
+                  Continue Browsing as Guest
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLIENT QR SCANNER MODAL (ZERO EMOJIS, PURE SVG) -->
+          <div id="modal-client-qr" class="modal-backdrop" aria-hidden="true">
+            <div class="glass-modal client-qr-modal">
+              <div class="modal-header">
+                <div class="modal-icon-badge glass">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5c285" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                  </svg>
+                </div>
+                <h3 class="modal-title">Elevator QR Scanner</h3>
+                <p class="modal-subtitle">Point camera at hoistway or cabin QR tag</p>
+              </div>
+
+              <div class="client-scanner-viewport">
+                <div class="client-scanner-laser"></div>
+                <div class="client-scanner-reticle">
+                  <span class="corner top-left"></span>
+                  <span class="corner top-right"></span>
+                  <span class="corner bottom-left"></span>
+                  <span class="corner bottom-right"></span>
+                </div>
+                <p class="client-scanner-hint">Simulating Live Optical Alignment...</p>
+              </div>
+
+              <!-- Quick Test QR Units -->
+              <div class="client-scanner-quick-select">
+                <span class="quick-select-label">Quick Scan Demo Unit:</span>
+                <div class="quick-select-chips">
+                  <button type="button" class="glass quick-chip" onclick="window.simulateScanUnit && window.simulateScanUnit('lift-101');">CBX-101</button>
+                  <button type="button" class="glass quick-chip" onclick="window.simulateScanUnit && window.simulateScanUnit('lift-102');">CBX-102</button>
+                  <button type="button" class="glass quick-chip" onclick="window.simulateScanUnit && window.simulateScanUnit('lift-103');">CBX-103</button>
+                </div>
+              </div>
+
+              <div class="modal-actions" style="margin-top: 14px;">
+                <button type="button" class="glass modal-btn-cancel full-width" onclick="window.closeClientQrScanner && window.closeClientQrScanner();">Close Scanner</button>
+              </div>
             </div>
           </div>
 
@@ -332,6 +593,10 @@
       </div>
     </div>
   </main>
+  </div>
+
+  <!-- ROUTE 2: ENTERPRISE ADMINISTRATIVE CONSOLE (/console) -->
+  <div id="view-console" style="display: none;"></div>
 
   <script type="module" src="/src/main.js"></script>
 </body>

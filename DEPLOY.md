@@ -45,10 +45,10 @@ Vercel provides automatic HTTPS, edge CDN, zero-config Vite support, and instant
    - **Set up and deploy?** Press `y` (Yes).
    - **Which scope?** Select your account.
    - **Link to existing project?** Press `n` (No).
-   - **Project name?** Press `Enter` (default: `coffee-profile-screen`).
+   - **Project name?** Press `Enter` (default: `cabix-elevator-portal`).
    - **In which directory is your code located?** Press `Enter` (`./`).
    - **Want to modify settings?** Press `n` (Vercel automatically detects Vite).
-3. In ~20 seconds, your live production HTTPS URL will be printed (e.g., `https://artisan-roastery.vercel.app`).
+3. In ~20 seconds, your live production HTTPS URL will be printed (e.g., `https://cabix-elevator-portal.vercel.app`).
 
 ### Method B: Deploy via GitHub (Continuous Deployment)
 1. Push your repository to GitHub:
@@ -136,7 +136,7 @@ Once your live HTTPS link is running, test these features on your phone:
 
 - [ ] **HTTPS Padlock:** Verify the browser displays a secure connection lock (required for Service Worker).
 - [ ] **1-Tap Direct Install:**
-  - On **Android (Chrome)**: Tap the top-right install capsule button. Chrome should trigger the native **WebAPK installation prompt**, adding the custom coffee icon directly to your home screen and app drawer.
+  - On **Android (Chrome)**: Tap the top-right install capsule button. Chrome should trigger the native **WebAPK installation prompt**, adding the custom Cabix icon directly to your home screen and app drawer.
   - On **iOS (Safari)**: Tap the Share button $\rightarrow$ "Add to Home Screen".
 - [ ] **Native Standalone Mode:** Launch from your home screen icon. It will open edge-to-edge without browser address bars.
 - [ ] **Smooth Keyboard Typing:** Tap the email and password fields. Confirm the background video remains completely stable with zero flickering or jumping.
@@ -148,8 +148,8 @@ Once your live HTTPS link is running, test these features on your phone:
 
 ### 1. Built-in Free Guest / Demo Access (Active Out of the Box)
 The app now includes a 1-tap **"Continue as Guest"** capsule button right below the Sign In button.
-- Anyone visiting the site can tap it to immediately explore the full administrative coffee dashboard without registering or typing credentials.
-- Activates a dedicated **Guest Barista** trial profile.
+- Anyone visiting the site can tap it to immediately explore the portal without registering or typing credentials.
+- Activates a dedicated **Field Engineer Guest** trial profile.
 
 ### 2. Free Cloud Authentication (For Real User Accounts)
 If you want real multi-user cloud login with passwords, Google Sign-In, and user database storage, both of these providers are **100% free forever**:

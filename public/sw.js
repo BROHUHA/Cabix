@@ -1,15 +1,14 @@
-const CACHE_NAME = 'roastery-portal-v1';
+const CACHE_NAME = 'cabix-portal-v2';
 const CORE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
-  '/assets/icons/icon.svg',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
+  '/assets/icons/favicon-32.png',
+  '/assets/icons/favicon-64.png',
   '/assets/images/laurel-left.png',
-  '/assets/images/laurel-right.png',
-  '/assets/images/icon-trophy.png',
-  '/assets/images/icon-shuffle.png'
+  '/assets/images/laurel-right.png'
 ];
 
 self.addEventListener('install', (event) => {

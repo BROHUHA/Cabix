@@ -1,144 +1,243 @@
 /**
- * Mobile Coffee Profile & TD Administrative Portal - Main JavaScript
- * Includes SDF Liquid Glass Refraction Generator and Interactive Navigation
+ * Cabix Dual-Portal Application - Main JavaScript
+ * Includes SDF Liquid Glass Refraction Generator and Dual-Portal Router (/ vs /console)
  */
 
-// State tracking for authenticated barista vs guest session
-const savedAuth = localStorage.getItem('roastery_auth');
-const savedUsername = localStorage.getItem('roastery_username') || 'Dasha';
-const savedEmail = localStorage.getItem('roastery_email') || 'ajinaju68@gmail.com';
+import { CabixConsoleApp } from './console/consoleApp.js';
+import { cabixDB } from './services/db.js';
 
-window.currentUser = {
-  isGuest: savedAuth === 'guest',
-  name: savedAuth === 'guest' ? 'Guest' : savedUsername,
-  email: savedAuth === 'guest' ? 'guest@artisanroastery.app' : savedEmail
-};
-
-const ICON_PENCIL = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M12 20h9"></path>
-  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-</svg>`;
-
-const ICON_SIGNIN = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-  <polyline points="10 17 15 12 10 7"></polyline>
-  <line x1="15" y1="12" x2="3" y2="12"></line>
-</svg>`;
-
-function formatDisplayName(name) {
-  if (!name || typeof name !== 'string') return 'Guest';
-  const trimmed = name.trim();
-  if (!trimmed) return 'Guest';
-  if (trimmed.toLowerCase() === 'guest') return 'Guest';
-  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+// State tracking via Cabix Database Engine
+function getActiveUser() {
+  return cabixDB.getCurrentUser();
 }
 
-window.updateTopBarState = function() {
-  const btnTopAction = document.getElementById('btn-top-action');
-  const iconContainer = document.getElementById('top-action-icon');
-  const roleBadge = document.querySelector('.admin-role-badge');
-  const roleBadgeSpan = document.querySelector('.admin-role-badge span');
-  const userNameEl = document.querySelector('.user-name');
-  const userSubtitle = document.querySelector('.user-subtitle');
-  const userEmailDisplay = document.querySelector('.user-email-display');
+/**
+ * RENDER CABIX CLIENT PORTAL (MODULE 3 & 4)
+ * Dynamically updates facility info, building lifts, active inquiry tickets, and engineering services
+ */
+export function renderClientPortal() {
+  const user = getActiveUser();
+  const isGuest = cabixDB.isGuest();
 
-  const isGuest = Boolean(window.currentUser && window.currentUser.isGuest);
+  // 1. Update User Display Name in Reference Hero Section
+  const heroUserNameEl = document.getElementById('hero-user-name');
+  if (heroUserNameEl) {
+    heroUserNameEl.textContent = isGuest ? 'Guest' : (user.displayName || 'Abin');
+  }
 
-  if (isGuest) {
-    if (iconContainer) iconContainer.innerHTML = ICON_SIGNIN;
-    if (btnTopAction) {
-      btnTopAction.setAttribute('aria-label', 'Sign In to Account');
-      btnTopAction.setAttribute('title', 'Sign In to Account');
-      btnTopAction.classList.add('btn-guest-action');
-      btnTopAction.classList.remove('btn-edit');
+  // 2. Dynamic Role Pill (ADMINISTRATIVE ROLE / PENDING APPROVAL / VERIFIED CLIENT)
+  const heroRoleBadge = document.getElementById('hero-role-badge');
+  const heroRoleText = document.getElementById('hero-role-text');
+  const isApproved = Boolean(user.isApproved || user.role === 'admin' || user.role === 'god_admin');
+
+  if (heroRoleBadge && heroRoleText) {
+    if (user.role === 'admin' || user.role === 'god_admin') {
+      heroRoleBadge.className = 'admin-role-badge';
+      heroRoleText.textContent = 'ADMINISTRATIVE ROLE';
+    } else if (isApproved) {
+      heroRoleBadge.className = 'admin-role-badge';
+      heroRoleText.textContent = 'VERIFIED CLIENT';
+    } else if (isGuest) {
+      heroRoleBadge.className = 'admin-role-badge guest';
+      heroRoleText.textContent = 'GUEST PREVIEW';
+    } else {
+      heroRoleBadge.className = 'admin-role-badge pending';
+      heroRoleText.textContent = 'PENDING APPROVAL';
     }
-    if (roleBadge) roleBadge.classList.add('guest-badge');
-    if (roleBadgeSpan) roleBadgeSpan.textContent = 'GUEST ACCESS';
-    if (userNameEl) userNameEl.textContent = 'Guest';
-    if (userSubtitle) {
-      userSubtitle.textContent = '';
-      userSubtitle.style.display = 'none';
-    }
-    if (userEmailDisplay) {
-      userEmailDisplay.textContent = '';
-      userEmailDisplay.style.display = 'none';
+  }
+
+  // 3. Anti-Spam Access Approval Barrier & Unlocked Content Gating
+  const heroRequestContainer = document.getElementById('hero-request-container');
+  const approvedWrapper = document.getElementById('approved-content-wrapper');
+  const btnRequestAccess = document.getElementById('btn-request-access');
+  const btnRequestLabel = document.getElementById('btn-request-access-label');
+
+  if (isApproved) {
+    // Approved: Hide access barrier, reveal works, action pills & live chat
+    if (heroRequestContainer) heroRequestContainer.style.display = 'none';
+    if (approvedWrapper) {
+      approvedWrapper.classList.remove('hidden');
+      approvedWrapper.style.display = 'block';
     }
   } else {
-    if (iconContainer) iconContainer.innerHTML = ICON_PENCIL;
-    if (btnTopAction) {
-      btnTopAction.setAttribute('aria-label', 'Edit Barista Name');
-      btnTopAction.setAttribute('title', 'Edit Barista Name');
-      btnTopAction.classList.add('btn-edit');
-      btnTopAction.classList.remove('btn-guest-action');
+    // Unapproved: Show access barrier at bottom of hero to reduce spam users
+    if (heroRequestContainer) heroRequestContainer.style.display = 'flex';
+    if (approvedWrapper) {
+      approvedWrapper.classList.add('hidden');
+      approvedWrapper.style.display = 'none';
     }
-    if (roleBadge) roleBadge.classList.remove('guest-badge');
-    const currentName = localStorage.getItem('roastery_username') || (window.currentUser ? window.currentUser.name : 'Dasha');
-    if (roleBadgeSpan) roleBadgeSpan.textContent = 'ADMINISTRATIVE ROLE';
-    if (userNameEl) userNameEl.textContent = formatDisplayName(currentName);
-    if (userSubtitle) {
-      userSubtitle.textContent = 'Plum Parfait Latte';
-      userSubtitle.style.display = '';
-    }
-    if (userEmailDisplay) {
-      userEmailDisplay.textContent = '';
-      userEmailDisplay.style.display = 'none';
+
+    if (btnRequestAccess && btnRequestLabel) {
+      if (user.accessRequested) {
+        btnRequestAccess.classList.add('requested');
+        btnRequestLabel.textContent = 'Request Sent — Awaiting Review';
+      } else {
+        btnRequestAccess.classList.remove('requested');
+        btnRequestLabel.textContent = isGuest ? 'Sign In to Request Access' : 'Request Access Approval';
+      }
     }
   }
-};
 
-// Top Left Button Dynamic Action: Sign In for Guests, Edit Username for Logged Users
-window.handleTopAction = function(e) {
-  if (e) {
-    if (typeof e.preventDefault === 'function') e.preventDefault();
-    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+  // 4. Update Reference Works Stats Grid (154 works, 36 inspections, 12 lifts)
+  const statsWorksCount = document.getElementById('stats-works-count');
+  const statsInspectionsCount = document.getElementById('stats-inspections-count');
+  const statsLiftsCount = document.getElementById('stats-lifts-count');
+  if (statsWorksCount) statsWorksCount.textContent = '154';
+  if (statsInspectionsCount) statsInspectionsCount.textContent = '36';
+  if (statsLiftsCount) statsLiftsCount.textContent = String(cabixDB.getLifts().length || 12);
+
+  // 5. Inquiries & Requests List
+  const requestsContainer = document.getElementById('client-requests-container');
+  const requestsCountEl = document.getElementById('client-requests-count');
+
+  if (requestsContainer) {
+    if (isGuest) {
+      if (requestsCountEl) requestsCountEl.textContent = 'Sign In';
+      requestsContainer.innerHTML = `
+        <div class="inquiry-guest-notice">
+          <p>You are viewing Cabix in <strong>Guest Mode</strong>. Sign in to submit maintenance requests, receive live engineer updates, and access QR lifecycle inspections.</p>
+          <button type="button" class="glass modal-btn-save" style="margin: 0 auto; max-width: 200px;" onclick="window.handleOpenGuestPrompt && window.handleOpenGuestPrompt();">
+            Sign In to Connect
+          </button>
+        </div>
+      `;
+    } else {
+      const myRequests = cabixDB.getMaintenanceRequests();
+      if (requestsCountEl) {
+        requestsCountEl.textContent = `${myRequests.length} Active`;
+      }
+
+      if (myRequests.length === 0) {
+        requestsContainer.innerHTML = `
+          <div class="inquiry-guest-notice">
+            <p>No open maintenance requests recorded for your account. All elevator units are operating smoothly.</p>
+            <button type="button" class="glass modal-btn-save" style="margin: 0 auto; max-width: 220px;" onclick="window.handleOpenRequestModal && window.handleOpenRequestModal();">
+              Report New Issue
+            </button>
+          </div>
+        `;
+      } else {
+        requestsContainer.innerHTML = myRequests.map(req => {
+          const lift = req.liftId ? cabixDB.getLiftById(req.liftId) : null;
+          const liftCode = lift ? lift.unitCode : 'General Lift';
+          const isUrgent = req.priority === 'urgent' || req.priority === 'emergency';
+          
+          let statusLabel = 'Pending';
+          if (req.status === 'in_review') statusLabel = 'In Review';
+          if (req.status === 'dispatched') statusLabel = 'Tech Dispatched';
+          if (req.status === 'resolved') statusLabel = 'Resolved';
+
+          const formattedDate = new Date(req.createdAt).toLocaleDateString(undefined, {
+            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+
+          return `
+            <div class="inquiry-card">
+              <div class="inquiry-header">
+                <div>
+                  <span class="inquiry-ticket-num">${req.ticketNumber}</span>
+                  <span style="font-size: 11px; color: var(--muted); margin-left: 6px;">(${liftCode})</span>
+                </div>
+                <span class="inquiry-status-pill ${req.status}">${statusLabel}</span>
+              </div>
+              <div class="inquiry-body">
+                ${req.description || 'Elevator maintenance inquiry submitted.'}
+              </div>
+              <div class="inquiry-meta-row">
+                <span>Priority: <strong style="color: ${isUrgent ? '#ff4d4d' : '#ede4d8'}">${req.priority.toUpperCase()}</strong></span>
+                <span>${formattedDate}</span>
+              </div>
+              ${req.adminNotes ? `
+                <div class="inquiry-admin-note">
+                  <strong>Technician Dispatch Note:</strong> ${req.adminNotes}
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+      }
+    }
   }
 
-  const isGuest = Boolean(window.currentUser && window.currentUser.isGuest);
+  // 6. Admin Live Chat Messages Feed (Zero Emojis, Pure SVGs)
+  renderLiveChatFeed(user);
+}
+window.renderClientPortal = renderClientPortal;
 
-  if (isGuest) {
-    // Non-logged (guest) user: Top-left button provides Sign In feature!
-    if (navigator.vibrate) {
-      try { navigator.vibrate(25); } catch (_) {}
-    }
-    const feedbackEl = document.getElementById('login-feedback');
-    if (feedbackEl) {
-      feedbackEl.className = 'login-feedback';
-      feedbackEl.textContent = 'Sign in with your barista account to edit username and unlock admin privileges.';
-    }
-    // Return smoothly to login screen
-    window.handleBackToLogin();
-  } else {
-    // Logged-in user: Top-left button opens Edit Username modal!
-    window.openEditUsernameModal();
+/**
+ * Render Live Chat Messages Feed
+ */
+function renderLiveChatFeed(user) {
+  const feed = document.getElementById('chat-messages-feed');
+  if (!feed) return;
+
+  const messages = cabixDB.getChatMessages();
+  if (!messages || messages.length === 0) {
+    feed.innerHTML = `
+      <div style="text-align: center; font-size: 11.5px; color: var(--muted); padding: 18px 0;">
+        Direct technician channel ready. Send a message to start live dispatch.
+      </div>
+    `;
+    return;
   }
 
-  return false;
-};
+  feed.innerHTML = messages.map(msg => {
+    const isSentByMe = user && msg.senderId === user.id;
+    const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const isTech = msg.senderRole === 'admin' || msg.senderRole === 'god_admin';
 
-// Edit Username Modal Functions (10 letters max)
-window.openEditUsernameModal = function() {
-  const modal = document.getElementById('modal-edit-username');
-  const input = document.getElementById('input-edit-username');
-  const counter = document.getElementById('edit-username-counter');
-  const userNameEl = document.querySelector('.user-name');
+    return `
+      <div class="chat-msg-row ${isSentByMe ? 'sent' : 'received'}">
+        <div class="chat-msg-author">
+          <span>${msg.senderName || (isTech ? 'Technician Lead' : 'Client')}</span>
+          ${isTech ? '<span style="font-size: 9px; padding: 2px 5px; border-radius: 4px; background: rgba(245,158,11,0.25); color: #f5c285; font-weight: 700;">STAFF</span>' : ''}
+        </div>
+        <div class="chat-bubble">
+          ${msg.text}
+          <span class="chat-bubble-time">${time}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
 
-  if (input && userNameEl) {
-    input.value = userNameEl.textContent.trim().substring(0, 10) || 'Dasha';
-    if (counter) {
-      counter.textContent = `${input.value.length}/10`;
-      counter.classList.toggle('limit', input.value.length >= 10);
-    }
+  feed.scrollTop = feed.scrollHeight;
+}
+
+// ============================================================================
+// QUESTION FORM MODAL CONTROLLER (MODULE 3)
+// ============================================================================
+
+window.handleOpenRequestModal = function(liftId, defaultCategory) {
+  if (cabixDB.isGuest()) {
+    window.handleOpenGuestPrompt();
+    return;
+  }
+
+  const modal = document.getElementById('modal-question-form');
+  const selectLift = document.getElementById('q-input-lift');
+  const descInput = document.getElementById('q-input-desc');
+
+  if (selectLift) {
+    const lifts = cabixDB.getLifts();
+    selectLift.innerHTML = lifts.map(l => `
+      <option value="${l.id}" ${l.id === liftId ? 'selected' : ''}>
+        ${l.unitCode} (${l.buildingName} - ${l.modelType})
+      </option>
+    `).join('') + `<option value="">General Building Elevator / Other</option>`;
+  }
+
+  if (defaultCategory) {
+    const radio = document.querySelector(`input[name="q-category"][value="${defaultCategory}"]`);
+    if (radio) radio.checked = true;
+  }
+
+  if (descInput && !descInput.value) {
+    descInput.value = '';
   }
 
   if (modal) {
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
-    setTimeout(() => {
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    }, 120);
   }
 
   if (navigator.vibrate) {
@@ -146,121 +245,121 @@ window.openEditUsernameModal = function() {
   }
 };
 
-window.closeEditUsernameModal = function() {
-  const modal = document.getElementById('modal-edit-username');
+window.closeQuestionModal = function() {
+  const modal = document.getElementById('modal-question-form');
   if (modal) {
     modal.classList.remove('active');
     modal.setAttribute('aria-hidden', 'true');
   }
 };
 
-window.saveUsername = function(e) {
+window.handleSubmitQuestionForm = function(e) {
   if (e) {
     if (typeof e.preventDefault === 'function') e.preventDefault();
     if (typeof e.stopPropagation === 'function') e.stopPropagation();
   }
 
-  const input = document.getElementById('input-edit-username');
-  const userNameEl = document.querySelector('.user-name');
+  const selectLift = document.getElementById('q-input-lift');
+  const categoryRadio = document.querySelector('input[name="q-category"]:checked');
+  const locRadio = document.querySelector('input[name="q-loc"]:checked');
+  const frequencySelect = document.getElementById('q-input-frequency');
+  const impactSelect = document.getElementById('q-input-impact');
+  const urgentCheck = document.getElementById('q-input-urgent');
+  const descInput = document.getElementById('q-input-desc');
 
-  if (input) {
-    const trimmed = input.value.trim().substring(0, 10);
-    if (trimmed) {
-      const formatted = formatDisplayName(trimmed);
-      if (userNameEl) {
-        userNameEl.textContent = formatted;
-      }
-      localStorage.setItem('roastery_username', formatted);
-      if (window.currentUser) {
-        window.currentUser.name = formatted;
-      }
+  const liftId = selectLift ? selectLift.value : null;
+  const issueCategory = categoryRadio ? categoryRadio.value : 'abnormal_noise';
+  const locationInLift = locRadio ? locRadio.value : 'Cabin Interior';
+  const timeOfDayObserved = frequencySelect ? frequencySelect.value : 'Continuous';
+  const impactOnRide = impactSelect ? impactSelect.value : 'Smooth, but noise concerns passengers';
+  const isUrgent = urgentCheck ? urgentCheck.checked : false;
+  const description = descInput ? descInput.value.trim() : '';
+
+  const res = cabixDB.createMaintenanceRequest({
+    liftId,
+    issueCategory,
+    priority: isUrgent ? 'urgent' : 'normal',
+    description: description || `Reported ${issueCategory.replace(/_/g, ' ')} issue via client mobile portal.`,
+    questionnaireAnswers: {
+      locationInLift,
+      timeOfDayObserved,
+      impactOnRide,
+      urgentEscalationRequested: isUrgent
     }
-  }
+  });
 
-  window.closeEditUsernameModal();
+  if (res.success) {
+    if (navigator.vibrate) {
+      try { navigator.vibrate([30, 60, 30]); } catch (_) {}
+    }
 
-  if (navigator.vibrate) {
-    try { navigator.vibrate([20, 40, 20]); } catch (_) {}
+    window.closeQuestionModal();
+    renderClientPortal();
+
+    alert(`✓ Maintenance Request Dispatched!\n\nTicket: ${res.request.ticketNumber}\nStatus: PENDING REVIEW\nOur certified technicians have been notified.`);
+    
+    // Clear description
+    if (descInput) descInput.value = '';
+  } else {
+    alert(`Could not submit request: ${res.error || 'Unknown error'}`);
   }
 
   return false;
 };
 
-// First-Time Login Welcome Modal Functions (10 letters max)
-window.openFirstLoginModal = function() {
-  const modal = document.getElementById('modal-first-login');
-  const input = document.getElementById('input-first-username');
-  const counter = document.getElementById('first-username-counter');
-  const currentName = localStorage.getItem('roastery_username') || '';
-
-  if (input) {
-    input.value = currentName.substring(0, 10);
-    if (counter) {
-      counter.textContent = `${input.value.length}/10`;
-      counter.classList.toggle('limit', input.value.length >= 10);
-    }
+window.handleServiceInquire = function(serviceId, serviceCategory) {
+  if (cabixDB.isGuest()) {
+    window.handleOpenGuestPrompt();
+    return;
   }
 
+  window.handleOpenRequestModal(null, 'routine_maintenance');
+  const descInput = document.getElementById('q-input-desc');
+  if (descInput) {
+    descInput.value = `Client inquiry regarding: ${serviceCategory}. Please arrange an engineering consultation.`;
+  }
+};
+
+// ============================================================================
+// GUEST PROMPT MODAL CONTROLLER (MODULE 4)
+// ============================================================================
+
+window.handleOpenGuestPrompt = function() {
+  const modal = document.getElementById('modal-guest-prompt');
   if (modal) {
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
-    setTimeout(() => {
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    }, 150);
   }
+};
+
+window.closeGuestPromptModal = function() {
+  const modal = document.getElementById('modal-guest-prompt');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+};
+
+window.handleQuickDemoClientLogin = function() {
+  cabixDB.login('user@cabix.app', 'user123');
+  window.closeGuestPromptModal();
+
+  const emailInput = document.getElementById('td-email');
+  const passInput = document.getElementById('td-password');
+  if (emailInput) emailInput.value = 'user@cabix.app';
+  if (passInput) passInput.value = 'user123';
+
+  renderClientPortal();
 
   if (navigator.vibrate) {
     try { navigator.vibrate([20, 40]); } catch (_) {}
   }
 };
 
-window.closeFirstLoginModal = function() {
-  const modal = document.getElementById('modal-first-login');
-  if (modal) {
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-  }
-};
+// ============================================================================
+// AUTHENTICATION HANDLERS
+// ============================================================================
 
-window.saveFirstLoginUsername = function(e) {
-  if (e) {
-    if (typeof e.preventDefault === 'function') e.preventDefault();
-    if (typeof e.stopPropagation === 'function') e.stopPropagation();
-  }
-
-  const input = document.getElementById('input-first-username');
-  const userNameEl = document.querySelector('.user-name');
-
-  let chosenName = 'Dasha';
-  if (input && input.value.trim()) {
-    chosenName = formatDisplayName(input.value.trim().substring(0, 10));
-  } else {
-    chosenName = 'Dasha';
-  }
-
-  localStorage.setItem('roastery_username', chosenName);
-  localStorage.setItem('roastery_first_login_completed', 'true');
-
-  if (window.currentUser) {
-    window.currentUser.name = chosenName;
-  }
-  if (userNameEl) {
-    userNameEl.textContent = chosenName;
-  }
-
-  window.closeFirstLoginModal();
-
-  if (navigator.vibrate) {
-    try { navigator.vibrate([25, 50, 25]); } catch (_) {}
-  }
-
-  return false;
-};
-
-// Global instant navigation handlers (available immediately before DOMContentLoaded)
 window.handleDirectLogin = function(e) {
   if (e) {
     if (typeof e.preventDefault === 'function') e.preventDefault();
@@ -271,23 +370,43 @@ window.handleDirectLogin = function(e) {
   const viewProfile = document.getElementById('view-profile');
   const feedbackEl = document.getElementById('login-feedback');
   const emailInput = document.getElementById('td-email');
+  const passInput = document.getElementById('td-password');
 
-  const isFirstTime = !localStorage.getItem('roastery_first_login_completed');
+  const email = emailInput ? emailInput.value.trim() : 'user@cabix.app';
+  const pass = passInput ? passInput.value.trim() : 'user123';
 
-  // Authenticate user
-  if (window.currentUser) {
-    window.currentUser.isGuest = false;
-    if (emailInput && emailInput.value.trim()) {
-      window.currentUser.email = emailInput.value.trim();
-      localStorage.setItem('roastery_email', emailInput.value.trim());
+  const loginRes = cabixDB.login(email, pass);
+
+  if (!loginRes.success) {
+    if (feedbackEl) {
+      feedbackEl.className = 'login-feedback error';
+      feedbackEl.textContent = `✕ ${loginRes.error || 'Invalid credentials'}`;
     }
+    if (navigator.vibrate) {
+      try { navigator.vibrate([40, 40, 40]); } catch (_) {}
+    }
+    return false;
   }
-  localStorage.setItem('roastery_auth', 'logged_in');
-  window.updateTopBarState();
 
+  const user = loginRes.user;
+
+  // If God Admin or Secondary Admin, provide clear path to Console
+  if (user.role === 'god_admin' || user.role === 'admin') {
+    if (feedbackEl) {
+      feedbackEl.className = 'login-feedback success';
+      feedbackEl.textContent = `✓ Engineering Authorization Verified (${user.role.toUpperCase()})`;
+    }
+    setTimeout(() => {
+      window.location.hash = '#console';
+      routeDualPortal();
+    }, 250);
+    return false;
+  }
+
+  // Client User
   if (feedbackEl) {
     feedbackEl.className = 'login-feedback success';
-    feedbackEl.textContent = '✓ Administrative Login Authorized';
+    feedbackEl.textContent = '✓ Client Portal Authorized';
   }
 
   if (navigator.vibrate) {
@@ -299,20 +418,29 @@ window.handleDirectLogin = function(e) {
     if (viewProfile) viewProfile.classList.add('active');
     const screenEl = document.querySelector('.screen');
     if (screenEl) screenEl.scrollTop = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     if (feedbackEl) feedbackEl.textContent = '';
+
+    const heroVideo = document.querySelector('.hero-video');
+    if (heroVideo) {
+      try { heroVideo.play().catch(() => {}); } catch (_) {}
+    }
 
     try {
       history.pushState({ screen: 'profile' }, '', '#profile');
     } catch (_) {}
 
-    // Pop up window for first-time logged user to set their username (max 10 letters)
-    if (isFirstTime) {
+    renderClientPortal();
+
+    // If new user registered, pop up the minimal "Enter Your Name" modal immediately
+    if (loginRes.isNewUser) {
       setTimeout(() => {
-        window.openFirstLoginModal();
-      }, 300);
+        window.openMinimalNameModal && window.openMinimalNameModal();
+      }, 350);
     }
 
-    // Safely recompute liquid glass on visible profile screen
     setTimeout(() => {
       try {
         if (typeof window.initLiquidGlass === 'function') {
@@ -325,7 +453,6 @@ window.handleDirectLogin = function(e) {
   return false;
 };
 
-// 1-Tap Free Guest Login Handler
 window.handleGuestLogin = function(e) {
   if (e) {
     if (typeof e.preventDefault === 'function') e.preventDefault();
@@ -336,18 +463,11 @@ window.handleGuestLogin = function(e) {
   const viewProfile = document.getElementById('view-profile');
   const feedbackEl = document.getElementById('login-feedback');
 
-  // Set guest state
-  if (window.currentUser) {
-    window.currentUser.isGuest = true;
-    window.currentUser.name = 'Guest';
-    window.currentUser.email = 'guest@artisanroastery.app';
-  }
-  localStorage.setItem('roastery_auth', 'guest');
-  window.updateTopBarState();
+  cabixDB.loginAsGuest();
 
   if (feedbackEl) {
     feedbackEl.className = 'login-feedback success';
-    feedbackEl.textContent = '✓ Free Guest Barista Pass Activated';
+    feedbackEl.textContent = '✓ Guest Services Preview Activated';
   }
 
   if (navigator.vibrate) {
@@ -359,11 +479,21 @@ window.handleGuestLogin = function(e) {
     if (viewProfile) viewProfile.classList.add('active');
     const screenEl = document.querySelector('.screen');
     if (screenEl) screenEl.scrollTop = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     if (feedbackEl) feedbackEl.textContent = '';
+
+    const heroVideo = document.querySelector('.hero-video');
+    if (heroVideo) {
+      try { heroVideo.play().catch(() => {}); } catch (_) {}
+    }
 
     try {
       history.pushState({ screen: 'profile' }, '', '#profile');
     } catch (_) {}
+
+    renderClientPortal();
 
     setTimeout(() => {
       try {
@@ -386,6 +516,8 @@ window.handleBackToLogin = function(e) {
   const viewLogin = document.getElementById('view-login');
   const viewProfile = document.getElementById('view-profile');
 
+  cabixDB.logout();
+
   if (navigator.vibrate) {
     try { navigator.vibrate(15); } catch (_) {}
   }
@@ -394,12 +526,202 @@ window.handleBackToLogin = function(e) {
   if (viewLogin) viewLogin.classList.add('active');
   const screenEl = document.querySelector('.screen');
   if (screenEl) screenEl.scrollTop = 0;
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 
   try {
     history.pushState({ screen: 'login' }, '', '#login');
   } catch (_) {}
 
   return false;
+};
+
+// ============================================================================
+// ACCESS APPROVAL SYSTEM (ANTI-SPAM BARRIER)
+// ============================================================================
+
+window.handleRequestAccess = function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  const user = getActiveUser();
+
+  if (user.isGuest) {
+    window.handleOpenGuestPrompt();
+    return;
+  }
+
+  const res = cabixDB.requestUserAccess(user.id);
+  if (res.success) {
+    if (navigator.vibrate) {
+      try { navigator.vibrate([30, 40, 30]); } catch (_) {}
+    }
+
+    const btnRequestAccess = document.getElementById('btn-request-access');
+    const btnRequestLabel = document.getElementById('btn-request-access-label');
+    if (btnRequestAccess) btnRequestAccess.classList.add('requested');
+    if (btnRequestLabel) btnRequestLabel.textContent = 'Request Sent — Awaiting Review';
+
+    alert('Access request submitted directly to Cabix Administrators.\n\nOnce an engineer approves your profile in the console, your access to Works, Add Work, QR Scanner, and Live Chat will automatically unlock.');
+    renderClientPortal();
+  }
+};
+
+// ============================================================================
+// ADMIN LIVE CHAT MESSAGING CONTROLLER
+// ============================================================================
+
+window.handleSendChatMessage = function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  const input = document.getElementById('chat-input-text');
+  if (!input) return;
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  const res = cabixDB.sendChatMessage(text);
+  if (res.success) {
+    input.value = '';
+    const user = getActiveUser();
+    renderLiveChatFeed(user);
+    if (navigator.vibrate) {
+      try { navigator.vibrate(15); } catch (_) {}
+    }
+  }
+};
+
+window.openLiveChatModal = function() {
+  const modal = document.getElementById('modal-live-chat');
+  if (modal) {
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    const user = getActiveUser();
+    renderLiveChatFeed(user);
+    setTimeout(() => {
+      const input = document.getElementById('chat-input-text');
+      if (input) input.focus();
+    }, 150);
+  }
+  if (navigator.vibrate) {
+    try { navigator.vibrate(15); } catch (_) {}
+  }
+};
+
+window.closeLiveChatModal = function() {
+  const modal = document.getElementById('modal-live-chat');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+};
+
+// ============================================================================
+// MINIMAL "ENTER YOUR NAME" MODAL CONTROLLER
+// ============================================================================
+
+window.openMinimalNameModal = function() {
+  const modal = document.getElementById('modal-first-login');
+  const input = document.getElementById('input-first-username');
+  const counter = document.getElementById('first-username-counter');
+  const user = getActiveUser();
+
+  if (modal) {
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  if (input) {
+    input.value = user && user.displayName && user.displayName !== 'Guest' ? user.displayName : '';
+    if (counter) counter.textContent = `${input.value.length}/10`;
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, 120);
+  }
+};
+
+window.closeMinimalNameModal = function() {
+  const modal = document.getElementById('modal-first-login');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+};
+window.closeFirstLoginModal = window.closeMinimalNameModal;
+
+window.saveMinimalUsername = function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  const input = document.getElementById('input-first-username');
+  if (!input) return;
+
+  const name = input.value.trim();
+  if (!name) return;
+
+  const user = getActiveUser();
+  cabixDB.updateUserDisplayName(user.id, name);
+
+  const heroUserNameEl = document.getElementById('hero-user-name');
+  if (heroUserNameEl) heroUserNameEl.textContent = name;
+
+  window.closeMinimalNameModal();
+  renderClientPortal();
+
+  if (navigator.vibrate) {
+    try { navigator.vibrate([20, 30]); } catch (_) {}
+  }
+};
+window.saveFirstLoginUsername = window.saveMinimalUsername;
+
+// ============================================================================
+// CLIENT QR SCANNER MODAL CONTROLLER
+// ============================================================================
+
+window.handleOpenClientQrScanner = function() {
+  const modal = document.getElementById('modal-client-qr');
+  if (modal) {
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  if (navigator.vibrate) {
+    try { navigator.vibrate(15); } catch (_) {}
+  }
+};
+
+window.closeClientQrScanner = function() {
+  const modal = document.getElementById('modal-client-qr');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+};
+
+window.simulateScanUnit = function(liftId) {
+  window.closeClientQrScanner();
+  window.handleOpenRequestModal(liftId);
+};
+
+// ============================================================================
+// SHUFFLE PRIMARY WORK ORDER
+// ============================================================================
+
+const demoWorkOrders = [
+  { code: 'CBX-LIFT-101', desc: 'MRL Traction • 18 Landings Verified', img: '/assets/images/elevator_cabin.jpg' },
+  { code: 'CBX-LIFT-102', desc: 'Hydraulic Freight • Pressure Test Passed', img: '/assets/images/elevator_works.jpg' },
+  { code: 'CBX-LIFT-103', desc: 'Panoramic Glass • PM Scheduled in 4d', img: '/assets/images/elevator_tower.jpg' }
+];
+let activeWorkIndex = 0;
+
+window.shuffleActiveWork = function() {
+  activeWorkIndex = (activeWorkIndex + 1) % demoWorkOrders.length;
+  const wo = demoWorkOrders[activeWorkIndex];
+  const titleEl = document.getElementById('active-work-title');
+  const descEl = document.getElementById('active-work-desc');
+  const imgEl = document.getElementById('active-work-img');
+  if (titleEl) titleEl.textContent = wo.code;
+  if (descEl) descEl.textContent = wo.desc;
+  if (imgEl && wo.img) imgEl.src = wo.img;
+
+  if (navigator.vibrate) {
+    try { navigator.vibrate(20); } catch (_) {}
+  }
 };
 
 window.triggerDirectInstall = function(e) {
@@ -417,9 +739,9 @@ window.triggerDirectInstall = function(e) {
   } else {
     const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     if (isIOS) {
-      alert('📲 Install to iOS Home Screen:\n\n1. Tap the Share button (⎋) at the bottom of Safari.\n2. Tap "Add to Home Screen".\n3. Tap "Add" to launch in edge-to-edge standalone mode!');
+      alert('Install to iOS Home Screen:\n\n1. Tap the Share button at the bottom of Safari.\n2. Tap "Add to Home Screen".\n3. Tap "Add" to launch in edge-to-edge standalone mode!');
     } else {
-      alert('📲 Direct 1-Tap Web App Install:\n\n1. Tap the 3 dots (⋮) in Chrome top right.\n2. Tap "Install app" or "Add to Home screen".\n3. Tap "Install".\n\nIt installs directly onto your phone drawer with live OTA updates!');
+      alert('Direct 1-Tap Web App Install:\n\n1. Tap the 3 dots menu in Chrome top right.\n2. Tap "Install app" or "Add to Home screen".\n3. Tap "Install".\n\nIt installs directly onto your phone drawer with live OTA updates!');
     }
   }
 };
@@ -437,6 +759,9 @@ window.addEventListener('popstate', (e) => {
   }
   const screenEl = document.querySelector('.screen');
   if (screenEl) screenEl.scrollTop = 0;
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 });
 
 function generateLiquidGlassFilter(element, index) {
@@ -700,10 +1025,50 @@ function setupInteractions() {
   bindCharCounter('input-edit-username', 'edit-username-counter');
   bindCharCounter('input-first-username', 'first-username-counter');
 
+  const modalQuestionEl = document.getElementById('modal-question-form');
+  if (modalQuestionEl) {
+    modalQuestionEl.addEventListener('click', (e) => {
+      if (e.target === modalQuestionEl) {
+        window.closeQuestionModal();
+      }
+    });
+  }
+
+  const modalGuestEl = document.getElementById('modal-guest-prompt');
+  if (modalGuestEl) {
+    modalGuestEl.addEventListener('click', (e) => {
+      if (e.target === modalGuestEl) {
+        window.closeGuestPromptModal();
+      }
+    });
+  }
+
+  const modalChatEl = document.getElementById('modal-live-chat');
+  if (modalChatEl) {
+    modalChatEl.addEventListener('click', (e) => {
+      if (e.target === modalChatEl) {
+        window.closeLiveChatModal();
+      }
+    });
+  }
+
+  const modalQrEl = document.getElementById('modal-client-qr');
+  if (modalQrEl) {
+    modalQrEl.addEventListener('click', (e) => {
+      if (e.target === modalQrEl) {
+        window.closeClientQrScanner();
+      }
+    });
+  }
+
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       window.closeEditUsernameModal();
       window.closeFirstLoginModal();
+      window.closeQuestionModal();
+      window.closeGuestPromptModal();
+      window.closeLiveChatModal();
+      window.closeClientQrScanner();
     }
   });
 }
@@ -873,11 +1238,79 @@ function registerServiceWorker() {
   });
 }
 
+// ============================================================================
+// DUAL-PORTAL ROUTER (/ vs /console)
+// ============================================================================
+function routeDualPortal() {
+  const isConsole = window.location.pathname.startsWith('/console') || window.location.hash === '#console';
+  const clientApp = document.getElementById('view-client-app');
+  const consoleAppEl = document.getElementById('view-console');
+
+  if (isConsole) {
+    if (clientApp) clientApp.style.display = 'none';
+    if (consoleAppEl) {
+      consoleAppEl.style.display = 'block';
+      if (!window.activeConsoleInstance) {
+        window.activeConsoleInstance = new CabixConsoleApp(consoleAppEl);
+        window.activeConsoleInstance.mount();
+      } else {
+        window.activeConsoleInstance.render();
+      }
+    }
+    document.title = 'Cabix Engineering Console';
+  } else {
+    if (consoleAppEl) consoleAppEl.style.display = 'none';
+    if (clientApp) clientApp.style.display = '';
+    document.title = 'Cabix - Elevator Engineering & Maintenance';
+
+    const user = cabixDB.getCurrentUser();
+    const isProfileHash = window.location.hash === '#profile';
+    const viewLogin = document.getElementById('view-login');
+    const viewProfile = document.getElementById('view-profile');
+
+    if (isProfileHash || (user && !user.isGuest && user.id)) {
+      if (viewLogin) viewLogin.classList.remove('active');
+      if (viewProfile) viewProfile.classList.add('active');
+      const heroVideo = document.querySelector('.hero-video');
+      if (heroVideo) {
+        try { heroVideo.play().catch(() => {}); } catch (_) {}
+      }
+    }
+
+    try { renderClientPortal(); } catch (_) {}
+  }
+}
+
+window.addEventListener('popstate', routeDualPortal);
+window.addEventListener('hashchange', routeDualPortal);
+
+function setupSecretBackdoor() {
+  let taps = 0;
+  let timer = null;
+  const brandTrigger = document.querySelector('.cafe-brand-title') || document.querySelector('.top-bar-logo') || document.querySelector('.td-header');
+  if (brandTrigger) {
+    brandTrigger.addEventListener('click', () => {
+      taps++;
+      clearTimeout(timer);
+      timer = setTimeout(() => { taps = 0; }, 1200);
+      if (taps >= 3) {
+        taps = 0;
+        if (confirm('Enter Cabix Enterprise Engineering Console (/console)?')) {
+          window.location.hash = '#console';
+          routeDualPortal();
+        }
+      }
+    });
+  }
+}
+
 // Bulletproof execution order: Login & navigation attached first, visual enhancements follow
 function initializeApp() {
   setupTdLogin();
   setupInteractions();
-  try { window.updateTopBarState(); } catch (_) {}
+  setupSecretBackdoor();
+  try { routeDualPortal(); } catch (_) {}
+  try { renderClientPortal(); } catch (_) {}
   try { initDynamicBackground(); } catch (_) {}
   try { initLiquidGlass(); } catch (_) {}
   try { registerServiceWorker(); } catch (_) {}
